@@ -4,6 +4,8 @@ import { ref, get, child } from 'firebase/database';
 import { database } from '@/lib/firebase';
 import ProductDetailsClient from './ProductDetailsClient';
 
+export const dynamic = "force-dynamic";
+
 interface ProductPageProps {
   params: { id: string };
 }

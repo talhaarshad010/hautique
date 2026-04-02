@@ -1,4 +1,4 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
@@ -13,14 +13,29 @@ const firebaseConfig = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
 };
 
-// Initialize Firebase
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-const database = getDatabase(app);
+// Check if we have the minimum required config for initialization
+const isConfigValid = !!firebaseConfig.apiKey && !!firebaseConfig.projectId;
+
+// Initialize Firebase safely
+let app: FirebaseApp | undefined;
+try {
+  if (getApps().length > 0) {
+    app = getApp();
+  } else if (isConfigValid) {
+    app = initializeApp(firebaseConfig);
+  }
+} catch (error) {
+  console.error("Firebase initialization error:", error);
+}
+
+// Get database instance safely — at runtime, config is always available
+// via NEXT_PUBLIC_ env vars. Server pages use `force-dynamic` to skip build-time rendering.
+const database = app ? getDatabase(app) : (null as unknown as ReturnType<typeof getDatabase>);
 
 // Analytics initialization (client-side only)
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined" && app) {
   isSupported().then((supported) => {
-    if (supported) {
+    if (supported && app) {
       getAnalytics(app);
     }
   });
