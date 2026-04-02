@@ -5,19 +5,35 @@ export interface Product {
   price: number;
   category: 'For Her' | 'For Him' | 'Testers' | 'Deals';
   image: string;
+  gallery?: string[];
   description: string;
   isNew?: boolean;
+  sizes?: string[];
 }
 
 export interface Order {
   id: string;
   customerName: string;
+  email: string;
   phone: string;
   address: string;
-  items: { productId: string; quantity: number; price: number }[];
+  items: { productId: string; name: string; quantity: number; price: number; size?: string }[];
   total: number;
-  status: 'Pending' | 'Delivered' | 'Cancelled';
+  shippingFee: number;
+  status: 'Pending' | 'Received' | 'Out for Delivery' | 'Delivered' | 'Cancelled';
   date: string;
+  notes?: string;
+}
+
+export interface Deal {
+  id: string;
+  name: string;
+  subtextText: string;
+  durationRange: string;
+  image: string;
+  price?: number;
+  gallery?: string[];
+  productIds?: string[];
 }
 
 export const products: Product[] = [
@@ -100,21 +116,25 @@ export const orders: Order[] = [
   {
     id: 'ORD-001',
     customerName: 'John Doe',
+    email: 'john@example.com',
     phone: '+1 234 567 890',
     address: '123 Luxury Ave, New York, NY',
-    items: [{ productId: '1', quantity: 1, price: 120 }],
+    items: [{ productId: '1', name: 'Noir Absolute', quantity: 1, price: 120 }],
     total: 120,
+    shippingFee: 0,
     status: 'Pending',
-    date: '2024-03-20',
+    date: 'March 20, 2024',
   },
   {
     id: 'ORD-002',
     customerName: 'Jane Smith',
+    email: 'jane@example.com',
     phone: '+1 987 654 321',
     address: '456 Fashion St, Los Angeles, CA',
-    items: [{ productId: '2', quantity: 2, price: 95 }],
+    items: [{ productId: '2', name: 'Velvet Rose', quantity: 2, price: 95 }],
     total: 190,
+    shippingFee: 0,
     status: 'Delivered',
-    date: '2024-03-18',
+    date: 'March 18, 2024',
   },
 ];

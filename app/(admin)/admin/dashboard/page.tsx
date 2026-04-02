@@ -12,6 +12,9 @@ import {
   ArrowDownRight
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { ref, onValue } from 'firebase/database';
+import { database } from '@/lib/firebase';
+import { Loader2 } from 'lucide-react';
 
 const StatCard = ({
   title,
@@ -47,29 +50,56 @@ const StatCard = ({
 );
 
 export default function DashboardPage() {
+  const [ordersList, setOrdersList] = React.useState<any[]>([]);
+  const [productsCount, setProductsCount] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Fetch Orders for Revenue and Order Count
+    const ordersRef = ref(database, 'orders');
+    const unsubscribeOrders = onValue(ordersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setOrdersList(Object.values(data));
+      }
+    });
+
+    // Fetch Products for count
+    const productsRef = ref(database, 'products');
+    const unsubscribeProducts = onValue(productsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setProductsCount(Object.keys(data).length);
+      }
+      setLoading(false);
+    });
+
+    return () => {
+      unsubscribeOrders();
+      unsubscribeProducts();
+    };
+  }, []);
+
+  const totalRevenue = ordersList.reduce((acc, order) => acc + (Number(order.total) || 0), 0);
+  const deliveredOrders = ordersList.filter(o => o.status === 'Delivered').length;
+
   const stats: { title: string; value: string; icon: any; trend: 'up' | 'down'; trendValue: string }[] = [
-    { title: 'Total Revenue', value: '$24,500', icon: DollarSign, trend: 'up', trendValue: '+12%' },
-    { title: 'Total Orders', value: '1,240', icon: ShoppingBag, trend: 'up', trendValue: '+8%' },
-    { title: 'Total Products', value: products.length.toString(), icon: TrendingUp, trend: 'up', trendValue: '+2%' },
-    { title: 'Active Customers', value: '850', icon: Users, trend: 'down', trendValue: '-3%' },
+    { title: 'Total Revenue', value: `$${totalRevenue.toLocaleString()}`, icon: DollarSign, trend: 'up', trendValue: '+12%' },
+    { title: 'Total Orders', value: ordersList.length.toString(), icon: ShoppingBag, trend: 'up', trendValue: '+8%' },
+    { title: 'Total Products', value: productsCount.toString(), icon: TrendingUp, trend: 'up', trendValue: '+2%' },
+    { title: 'Delivered', value: deliveredOrders.toString(), icon: Users, trend: 'up', trendValue: '+5%' },
   ];
 
   return (
     <div className="space-y-12">
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-4xl font-serif mb-2">Dashboard</h1>
-          <p className="text-neutral-400 text-sm">Welcome back, here&apos;s what&apos;s happening today.</p>
-        </div>
-        <div className="hidden md:block">
-          <p className="text-xs font-bold uppercase tracking-widest text-neutral-400">March 31, 2026</p>
-        </div>
+      <div>
+        <h1 className="text-4xl font-serif tracking-tight uppercase mb-2">Executive Overview</h1>
+        <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Real-time performance analytics and store activity.</p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {stats.map((stat) => (
-          <StatCard key={stat.title} {...stat} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, idx) => (
+          <StatCard key={idx} {...stat} />
         ))}
       </div>
 
@@ -91,9 +121,21 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
-                <tr key={order.id} className="border-b border-border hover:bg-neutral-50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-medium">{order.id}</td>
+              {loading ? (
+                <tr>
+                  <td colSpan={5} className="py-20 text-center">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-neutral-200" />
+                  </td>
+                </tr>
+              ) : ordersList.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-20 text-center text-neutral-400 text-xs uppercase tracking-widest font-bold">
+                    No orders yet
+                  </td>
+                </tr>
+              ) : ordersList.slice(0, 5).reverse().map((order, idx) => (
+                <tr key={idx} className="border-b border-border hover:bg-neutral-50 transition-colors">
+                  <td className="px-6 py-4 text-sm font-medium uppercase tracking-widest">{order.id}</td>
                   <td className="px-6 py-4 text-sm">{order.customerName}</td>
                   <td className="px-6 py-4">
                     <span className={cn(

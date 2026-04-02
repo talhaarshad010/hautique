@@ -17,11 +17,15 @@ export const metadata: Metadata = {
   description: 'Discover the finest scents at Hautique. Modern luxury perfumes for her and him.',
 };
 
+import { CartProvider } from '@/context/CartContext';
+
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body suppressHydrationWarning className="font-sans antialiased bg-white text-black">
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

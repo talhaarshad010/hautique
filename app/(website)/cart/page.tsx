@@ -7,29 +7,27 @@ import { Button, Card } from '@/components/ui';
 import { products } from '@/lib/mock-data';
 import { motion } from 'motion/react';
 import { Trash2, Minus, Plus, ArrowLeft, ShoppingBag } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { ref, onValue } from 'firebase/database';
+import { database } from '@/lib/firebase';
 
 export default function CartPage() {
-  // Mock cart state
-  const [cartItems, setCartItems] = React.useState([
-    { ...products[0], quantity: 1 },
-    { ...products[1], quantity: 2 },
-  ]);
+  const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
+  const [shipping, setShipping] = React.useState<number>(0);
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = 15;
-  const total = subtotal + shipping;
+  React.useEffect(() => {
+    const settingsRef = ref(database, 'settings/shippingFee');
+    const unsubscribe = onValue(settingsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (typeof data === 'number') {
+        setShipping(data);
+      }
+    });
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
-      )
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
+    return () => unsubscribe();
+  }, []);
+  
+  const total = cartTotal + shipping;
 
   if (cartItems.length === 0) {
     return (
@@ -68,12 +66,10 @@ export default function CartPage() {
           {cartItems.map((item) => (
             <div key={item.id} className="flex gap-6 p-6 bg-white border border-border group">
               <div className="relative w-24 h-24 sm:w-32 sm:h-32 bg-neutral-100 overflow-hidden">
-                <Image
-                  src={item.image}
+                <img
+                  src={item.image.includes('/upload/') ? item.image.replace('/upload/', '/upload/f_auto,q_auto/') : item.image}
                   alt={item.name}
-                  fill
-                  className="object-cover"
-                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="flex-grow flex flex-col justify-between">
@@ -83,7 +79,7 @@ export default function CartPage() {
                     <h3 className="text-lg font-serif">{item.name}</h3>
                   </div>
                   <button
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeFromCart(item.id, item.selectedSize)}
                     className="text-neutral-400 hover:text-black transition-colors"
                   >
                     <Trash2 className="w-5 h-5" />
@@ -92,14 +88,14 @@ export default function CartPage() {
                 <div className="flex justify-between items-end">
                   <div className="flex items-center border border-border">
                     <button
-                      onClick={() => updateQuantity(item.id, -1)}
+                      onClick={() => updateQuantity(item.id, item.quantity - 1, item.selectedSize)}
                       className="p-2 hover:bg-neutral-100 transition-colors"
                     >
                       <Minus className="w-3 h-3" />
                     </button>
                     <span className="w-10 text-center text-sm font-medium">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.id, 1)}
+                      onClick={() => updateQuantity(item.id, item.quantity + 1, item.selectedSize)}
                       className="p-2 hover:bg-neutral-100 transition-colors"
                     >
                       <Plus className="w-3 h-3" />
@@ -119,7 +115,7 @@ export default function CartPage() {
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Subtotal</span>
-                <span>${subtotal}.00</span>
+                <span>${cartTotal}.00</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Shipping</span>

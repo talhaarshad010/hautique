@@ -29,6 +29,7 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (v: boolea
     { name: 'Orders', href: '/admin/orders', icon: ShoppingBag },
     { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     { name: 'Deals', href: '/admin/deals', icon: Tag },
+    { name: 'Hero Slider', href: '/admin/slider', icon: LayoutDashboard },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 

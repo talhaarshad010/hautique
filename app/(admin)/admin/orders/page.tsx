@@ -3,14 +3,45 @@
 import * as React from 'react';
 import { Card, Badge, Button, Input } from '@/components/ui';
 import { orders, type Order } from '@/lib/mock-data';
-import { Search, Filter, Download, ExternalLink, Eye } from 'lucide-react';
+import { Search, Filter, Download, ExternalLink, Eye, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { ref, onValue, update } from 'firebase/database';
+import { database } from '@/lib/firebase';
 
 export default function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [ordersList, setOrdersList] = React.useState<Order[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const filteredOrders = orders.filter(o => 
+  React.useEffect(() => {
+    const ordersRef = ref(database, 'orders');
+    const unsubscribe = onValue(ordersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formatted = Object.entries(data).map(([id, order]: [string, any]) => ({
+          dbId: id,
+          ...order
+        }));
+        // Sort by id (date) descending if possible, or just as is
+        setOrdersList(formatted.reverse());
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const toggleStatus = async (dbId: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'Pending' ? 'Delivered' : 'Pending';
+    try {
+      await update(ref(database, `orders/${dbId}`), { status: newStatus });
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    }
+  };
+
+  const filteredOrders = ordersList.filter(o => 
     o.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
     o.customerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -63,8 +94,21 @@ export default function AdminOrdersPage() {
               <th className="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-400 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-100">
-            {filteredOrders.map((order) => (
+          <tbody className="divide-y divide-neutral-100 relative min-h-[200px]">
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="py-20 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-neutral-200" />
+                  <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold mt-4">Loading Orders...</p>
+                </td>
+              </tr>
+            ) : filteredOrders.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-20 text-center">
+                  <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">No orders found</p>
+                </td>
+              </tr>
+            ) : filteredOrders.map((order) => (
               <tr key={order.id} className="hover:bg-neutral-50 transition-colors">
                 <td className="px-6 py-6">
                   <span className="text-sm font-bold uppercase tracking-widest">{order.id}</span>
@@ -78,14 +122,17 @@ export default function AdminOrdersPage() {
                   <p className="text-[10px] text-neutral-400 uppercase tracking-widest max-w-[200px] truncate">{order.address}</p>
                 </td>
                 <td className="px-6 py-6">
-                  <span className={cn(
-                    "text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full",
-                    order.status === 'Delivered' ? 'bg-green-50 text-green-700' :
-                    order.status === 'Pending' ? 'bg-yellow-50 text-yellow-700' :
-                    'bg-red-50 text-red-700'
-                  )}>
+                  <button
+                    onClick={() => toggleStatus((order as any).dbId, order.status)}
+                    className={cn(
+                      "text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full transition-all hover:scale-105 active:scale-95",
+                      order.status === 'Delivered' ? 'bg-green-50 text-green-700 hover:bg-green-100' :
+                      order.status === 'Pending' ? 'bg-yellow-50 text-yellow-700 hover:bg-yellow-100' :
+                      'bg-red-50 text-red-700 hover:bg-red-100'
+                    )}
+                  >
                     {order.status}
-                  </span>
+                  </button>
                 </td>
                 <td className="px-6 py-6 text-sm font-serif">${order.total}.00</td>
                 <td className="px-6 py-6 text-right">

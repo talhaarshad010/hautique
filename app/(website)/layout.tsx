@@ -3,9 +3,11 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShoppingBag, Menu, X, User, Search } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, Search, Truck } from 'lucide-react';
 import { Button, cn } from '@/components/ui';
 import { motion, AnimatePresence } from 'motion/react';
+
+import { useCart } from '@/context/CartContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -13,6 +15,7 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [scrolled, setScrolled] = React.useState(false);
   const pathname = usePathname();
+  const { cartCount } = useCart();
 
   React.useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -33,6 +36,7 @@ const Navbar = () => {
     { name: 'Testers', href: '/testers' },
     { name: 'For Her', href: '/for-her' },
     { name: 'For Him', href: '/for-him' },
+    { name: 'Deals', href: '/deals' },
   ];
 
   return (
@@ -95,14 +99,26 @@ const Navbar = () => {
             {isSearchOpen ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
           </button>
         </div>
+        <Link href="/track-order" className="hover:opacity-70 transition-opacity" title="Track Order">
+          <Truck className="w-5 h-5" />
+        </Link>
         <button className="hover:opacity-70">
           <User className="w-5 h-5" />
         </button>
-        <Link href="/cart" className="relative hover:opacity-70">
-          <ShoppingBag className="w-5 h-5" />
-          <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            0
-          </span>
+        <Link href="/cart" className="relative hover:opacity-70 group">
+          <ShoppingBag className="w-5 h-5 transition-transform group-hover:-translate-y-1" />
+          <AnimatePresence>
+            {cartCount > 0 && (
+              <motion.span 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                className="absolute -top-2 -right-2 bg-black text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-bold"
+              >
+                {cartCount}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </Link>
       </div>
 
@@ -141,6 +157,16 @@ const Navbar = () => {
                     {link.name}
                   </Link>
                 ))}
+                <div className="pt-6 border-t border-neutral-100 flex flex-col gap-6">
+                  <Link
+                    href="/track-order"
+                    onClick={() => setIsOpen(false)}
+                    className="text-lg uppercase tracking-widest font-medium flex items-center gap-3"
+                  >
+                    <Truck className="w-5 h-5" />
+                    Track Order
+                  </Link>
+                </div>
               </div>
             </motion.div>
           </>
@@ -171,6 +197,7 @@ const Footer = () => (
       <div>
         <h4 className="text-sm uppercase tracking-widest font-bold mb-6">Support</h4>
         <ul className="flex flex-col gap-4 text-neutral-400 text-sm">
+          <li><Link href="/track-order" className="text-white hover:text-white font-bold transition-colors">Track Order</Link></li>
           <li><Link href="#" className="hover:text-white transition-colors">Shipping Policy</Link></li>
           <li><Link href="#" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
           <li><Link href="#" className="hover:text-white transition-colors">FAQs</Link></li>

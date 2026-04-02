@@ -6,23 +6,101 @@ import Image from 'next/image';
 import { Button, Input, Textarea, Card } from '@/components/ui';
 import { products } from '@/lib/mock-data';
 import { motion } from 'motion/react';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { useRouter } from 'next/navigation';
+import { ref, push, set, onValue } from 'firebase/database';
+import { database } from '@/lib/firebase';
 
 export default function CheckoutPage() {
   const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
+  const [orderId, setOrderId] = React.useState('');
+  const { cartItems, cartTotal, clearCart } = useCart();
+  const router = useRouter();
 
-  // Mock cart summary
-  const cartItems = [
-    { ...products[0], quantity: 1 },
-    { ...products[1], quantity: 2 },
-  ];
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = 15;
-  const total = subtotal + shipping;
+  const [formData, setFormData] = React.useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    postalCode: '',
+    notes: ''
+  });
+  
+  const [shipping, setShipping] = React.useState<number>(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  React.useEffect(() => {
+    const settingsRef = ref(database, 'settings/shippingFee');
+    const unsubscribe = onValue(settingsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (typeof data === 'number') {
+        setShipping(data);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+  
+  const total = cartTotal + shipping;
+  
+  React.useEffect(() => {
+    if (cartItems.length === 0 && !isSubmitted) {
+      router.push('/shop');
+    }
+  }, [cartItems, isSubmitted, router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    if (cartItems.length === 0) return;
+
+    setSubmitting(true);
+    try {
+      const ordersRef = ref(database, 'orders');
+      const newOrderRef = push(ordersRef);
+      const generatedId = `ORD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      
+      const newOrder = {
+        id: generatedId,
+        customerName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        address: `${formData.address}, ${formData.city}, ${formData.postalCode}`,
+        items: cartItems.map(item => ({
+          productId: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          size: item.selectedSize
+        })),
+        total: total,
+        shippingFee: shipping,
+        status: 'Pending',
+        date: new Date().toLocaleDateString('en-US', { 
+          month: 'long', 
+          day: 'numeric', 
+          year: 'numeric' 
+        }),
+        notes: formData.notes
+      };
+
+      await set(newOrderRef, newOrder);
+      
+      // Save order to local history
+      const savedOrders = JSON.parse(localStorage.getItem('hautique_recent_orders') || '[]');
+      if (!savedOrders.includes(generatedId)) {
+        localStorage.setItem('hautique_recent_orders', JSON.stringify([generatedId, ...savedOrders].slice(0, 5)));
+      }
+
+      setOrderId(generatedId);
+      setIsSubmitted(true);
+      clearCart();
+    } catch (error) {
+      console.error("Order submission failed:", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (isSubmitted) {
@@ -35,12 +113,17 @@ export default function CheckoutPage() {
         >
           <CheckCircle2 className="w-20 h-20 text-black mb-8 mx-auto" />
           <h1 className="text-4xl font-serif mb-4">Order Placed Successfully</h1>
-          <p className="text-neutral-500 mb-10 max-w-md">
-            Thank you for choosing Hautique. Your order #ORD-7721 has been received and is being processed.
+          <p className="text-neutral-500 mb-10 max-w-md mx-auto">
+            Thank you for choosing Hautique. Your order <span className="font-bold text-black">#{orderId}</span> has been received and is being processed.
           </p>
-          <Link href="/">
-            <Button size="lg">Return to Home</Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href={`/order-tracking/${orderId}`}>
+              <Button size="lg" className="px-10">Track My Order</Button>
+            </Link>
+            <Link href="/">
+              <Button variant="outline" size="lg" className="px-10">Return to Home</Button>
+            </Link>
+          </div>
         </motion.div>
       </div>
     );
@@ -68,15 +151,32 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-widest font-bold">Full Name *</label>
-                <Input required placeholder="John Doe" />
+                <Input 
+                  required 
+                  placeholder="John Doe" 
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-widest font-bold">Email Address *</label>
-                <Input required type="email" placeholder="john@example.com" />
+                <Input 
+                  required 
+                  type="email" 
+                  placeholder="john@example.com" 
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                />
               </div>
               <div className="space-y-2 md:col-span-2">
                 <label className="text-xs uppercase tracking-widest font-bold">Phone Number *</label>
-                <Input required type="tel" placeholder="+1 (555) 000-0000" />
+                <Input 
+                  required 
+                  type="tel" 
+                  placeholder="+1 (555) 000-0000" 
+                  value={formData.phone}
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                />
               </div>
             </div>
           </section>
@@ -86,16 +186,28 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-widest font-bold">Address</label>
-                <Input placeholder="123 Luxury Lane" />
+                <Input 
+                  placeholder="123 Luxury Lane" 
+                  value={formData.address}
+                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                />
               </div>
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-xs uppercase tracking-widest font-bold">City</label>
-                  <Input placeholder="New York" />
+                  <Input 
+                    placeholder="New York" 
+                    value={formData.city}
+                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs uppercase tracking-widest font-bold">Postal Code</label>
-                  <Input placeholder="10001" />
+                  <Input 
+                    placeholder="10001" 
+                    value={formData.postalCode}
+                    onChange={(e) => setFormData({...formData, postalCode: e.target.value})}
+                  />
                 </div>
               </div>
             </div>
@@ -105,7 +217,11 @@ export default function CheckoutPage() {
             <h2 className="text-xl font-serif mb-6 uppercase tracking-widest text-neutral-400">Additional Information</h2>
             <div className="space-y-2">
               <label className="text-xs uppercase tracking-widest font-bold">Order Notes (Optional)</label>
-              <Textarea placeholder="Special instructions for delivery..." />
+              <Textarea 
+                placeholder="Special instructions for delivery..." 
+                value={formData.notes}
+                onChange={(e) => setFormData({...formData, notes: e.target.value})}
+              />
             </div>
           </section>
 
@@ -128,7 +244,9 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          <Button type="submit" size="lg" className="w-full">Place Order</Button>
+          <Button type="submit" size="lg" className="w-full" disabled={submitting || cartItems.length === 0}>
+            {submitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto text-white" /> : "Confirm Order"}
+          </Button>
         </form>
 
         {/* Order Summary */}
@@ -139,21 +257,22 @@ export default function CheckoutPage() {
               {cartItems.map((item) => (
                 <div key={item.id} className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
-                    <div className="relative w-16 h-16 bg-white border border-border overflow-hidden">
-                      <Image
-                        src={item.image}
+                    <div className="relative w-16 h-16 bg-white border border-border overflow-hidden rounded">
+                      <img
+                        src={item.image.includes('/upload/') ? item.image.replace('/upload/', '/upload/f_auto,q_auto/') : item.image}
                         alt={item.name}
-                        fill
-                        className="object-cover"
-                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
                       />
-                      <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
+                      <span className="absolute -top-1 -right-1 bg-black text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
                         {item.quantity}
                       </span>
                     </div>
                     <div>
                       <h3 className="text-sm font-serif">{item.name}</h3>
-                      <p className="text-[10px] text-neutral-400 uppercase tracking-widest">{item.category}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-[10px] text-neutral-400 uppercase tracking-widest">{item.category}</p>
+                        {item.selectedSize && <span className="text-[10px] text-black font-bold uppercase tracking-widest px-2 py-0.5 bg-neutral-100 rounded-full">{item.selectedSize}</span>}
+                      </div>
                     </div>
                   </div>
                   <p className="text-sm font-medium">${item.price * item.quantity}.00</p>
@@ -164,11 +283,11 @@ export default function CheckoutPage() {
             <div className="space-y-4 pt-6 border-t border-border">
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Subtotal</span>
-                <span>${subtotal}.00</span>
+                <span>${cartTotal}.00</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Shipping</span>
-                <span>${shipping}.00</span>
+                <span className="text-green-600 font-medium">Free</span>
               </div>
               <div className="pt-4 border-t border-border flex justify-between font-bold text-lg">
                 <span>Total</span>
