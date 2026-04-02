@@ -35,7 +35,7 @@ export interface Deal {
   gallery?: string[];
   productIds?: string[];
 }
-
+// kdjfkjdkj
 export const products: Product[] = [
   {
     id: '1',
