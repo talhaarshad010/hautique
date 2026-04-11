@@ -181,7 +181,7 @@ function AdminProductsContent() {
     <div className="space-y-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-serif tracking-tight uppercase mb-2">Products</h1>
+          <h1 className="text-4xl  tracking-tight uppercase mb-2">Products</h1>
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Manage your fragrance collection and inventory.</p>
         </div>
         <Button 
@@ -260,7 +260,7 @@ function AdminProductsContent() {
                         {product.category}
                       </span>
                     </td>
-                    <td className="px-6 py-6 text-sm font-serif">PKR {product.price}.00</td>
+                    <td className="px-6 py-6 text-sm ">PKR {product.price}.00</td>
                     <td className="px-6 py-6">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
@@ -310,7 +310,7 @@ function AdminProductsContent() {
             >
               <div className="flex justify-between items-start mb-10">
                 <div>
-                  <h2 className="text-3xl font-serif uppercase tracking-tight mb-2">
+                  <h2 className="text-3xl  uppercase tracking-tight mb-2">
                     {editingProductId ? 'Edit Product' : 'Add New Product'}
                   </h2>
                   <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">Configure fragrance details</p>

@@ -98,7 +98,7 @@ export default function DealDetailPage() {
     return (
       <div className="pt-40 pb-24 px-6 text-center max-w-xl mx-auto">
         <Sparkles className="w-12 h-12 text-neutral-200 mx-auto mb-6" />
-        <h2 className="text-3xl font-serif mb-4 uppercase tracking-tight">Campaign Expired</h2>
+        <h2 className="text-3xl  mb-4 uppercase tracking-tight">Campaign Expired</h2>
         <p className="text-neutral-500 text-sm italic mb-12">This collection is no longer available or the link has changed.</p>
         <Button onClick={() => router.push('/deals')} variant="outline" className="text-[10px] uppercase tracking-widest px-8">
           Back to Collections
@@ -129,7 +129,7 @@ export default function DealDetailPage() {
             <span className="inline-block px-4 py-1 border border-white/30 backdrop-blur-md rounded-full text-[10px] uppercase tracking-[0.4em] mb-8 font-bold text-white">
               Exclusive Campaign
             </span>
-            <h1 className="text-5xl md:text-8xl font-serif mb-8 uppercase tracking-tighter leading-none text-white">
+            <h1 className="text-5xl md:text-8xl  mb-8 uppercase tracking-tighter leading-none text-white">
               {deal.name}
             </h1>
             <p className="text-lg md:text-xl font-light tracking-widest uppercase mb-12 text-white/80">
@@ -155,7 +155,7 @@ export default function DealDetailPage() {
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-8">
            <div>
              <p className="text-[10px] uppercase tracking-[0.5em] text-neutral-400 mb-2 font-bold">Campaign Rate</p>
-             <p className="text-5xl font-serif leading-none italic">${deal.price || 0}.00</p>
+             <p className="text-5xl  leading-none italic">${deal.price || 0}.00</p>
            </div>
            
            <Button 
@@ -193,7 +193,7 @@ export default function DealDetailPage() {
       <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
           <div className="max-w-md">
-            <h2 className="text-3xl font-serif uppercase tracking-tight mb-4 italic">Featured Elements</h2>
+            <h2 className="text-3xl  uppercase tracking-tight mb-4 italic">Featured Elements</h2>
             <p className="text-xs uppercase tracking-widest text-neutral-400 font-bold leading-relaxed">
               Fragrance components integrated into the {deal.name}. Selected for their harmonious resonance.
             </p>
@@ -242,11 +242,11 @@ export default function DealDetailPage() {
                   <div className="text-center space-y-2">
                     <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold">{product.category}</p>
                     <Link href={`/product/${product.id}`}>
-                      <h3 className="text-xl font-serif hover:underline underline-offset-8 decoration-neutral-100">
+                      <h3 className="text-xl  hover:underline underline-offset-8 decoration-neutral-100">
                         {product.name}
                       </h3>
                     </Link>
-                    <p className="text-lg font-serif italic text-neutral-400">${product.price}.00 (Ref)</p>
+                    <p className="text-lg  italic text-neutral-400">${product.price}.00 (Ref)</p>
                   </div>
                 </div>
               </motion.div>
@@ -259,7 +259,7 @@ export default function DealDetailPage() {
       <section className="bg-neutral-50 py-24 px-6 border-t border-neutral-100">
         <div className="max-w-4xl mx-auto text-center space-y-12">
            <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-400 font-bold mb-4 block underline underline-offset-8">Campaign Details</span>
-           <h3 className="text-3xl md:text-4xl font-serif italic">Limited-time fragrance explorations, available only while seasonal allocations remain.</h3>
+           <h3 className="text-3xl md:text-4xl  italic">Limited-time fragrance explorations, available only while seasonal allocations remain.</h3>
            <Link href="/deals">
              <Button variant="outline" className="rounded-none h-14 px-12 text-[10px] uppercase tracking-widest font-bold mt-8">
                 Explore Other Campaigns

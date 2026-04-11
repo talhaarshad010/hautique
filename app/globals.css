@@ -2,7 +2,6 @@
 
 @theme {
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
 
   --color-primary: #000000;
   --color-secondary: #FFFFFF;
@@ -12,7 +11,7 @@
 
 @layer base {
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+    @apply font-sans;
   }
 }
 

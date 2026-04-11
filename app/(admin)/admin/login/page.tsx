@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-serif font-bold tracking-tighter mb-2">HAUTIQUE</h1>
+          <h1 className="text-4xl  font-bold tracking-tighter mb-2">HAUTIQUE</h1>
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Admin Portal</p>
         </div>
 

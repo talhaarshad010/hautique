@@ -57,7 +57,7 @@ export default function OrderTrackingPage() {
         <div className="w-20 h-20 bg-neutral-50 rounded-full flex items-center justify-center mb-8">
           <ShoppingBag className="w-10 h-10 text-neutral-300" />
         </div>
-        <h1 className="text-3xl font-serif mb-4">Order Not Found</h1>
+        <h1 className="text-3xl  mb-4">Order Not Found</h1>
         <p className="text-neutral-500 mb-10 max-w-sm">
           We couldn't find an order with the ID <span className="font-bold text-black">{orderId}</span>. Please check your confirmation email and try again.
         </p>
@@ -85,7 +85,7 @@ export default function OrderTrackingPage() {
             <ArrowLeft className="w-3 h-3 mr-2" />
             Back to Shop
           </button>
-          <h1 className="text-5xl font-serif tracking-tight uppercase mb-4">Track Order</h1>
+          <h1 className="text-5xl  tracking-tight uppercase mb-4">Track Order</h1>
           <div className="flex flex-wrap items-center gap-4">
             <span className="text-sm font-bold uppercase tracking-widest text-neutral-900">{order.id}</span>
             <span className="w-1 h-1 bg-neutral-300 rounded-full" />
@@ -160,11 +160,11 @@ export default function OrderTrackingPage() {
                         />
                       </div>
                       <div>
-                        <h4 className="text-sm font-serif uppercase tracking-wider">{item.name}</h4>
+                        <h4 className="text-sm  uppercase tracking-wider">{item.name}</h4>
                         <p className="text-[10px] text-neutral-400 uppercase tracking-widest mt-1">Quantity: {item.quantity}</p>
                       </div>
                     </div>
-                    <p className="text-sm font-serif">${item.price * item.quantity}.00</p>
+                    <p className="text-sm ">${item.price * item.quantity}.00</p>
                   </div>
                 )
               })}
@@ -183,7 +183,7 @@ export default function OrderTrackingPage() {
               </div>
               <div className="pt-4 border-t border-neutral-200 flex justify-between">
                 <span className="text-[10px] uppercase tracking-[0.3em] font-black">Grand Total</span>
-                <span className="text-2xl font-serif">${order.total}.00</span>
+                <span className="text-2xl ">${order.total}.00</span>
               </div>
             </div>
           </section>
@@ -223,7 +223,7 @@ export default function OrderTrackingPage() {
 
           {/* Branding Note */}
           <div className="pt-12 text-center opacity-20 hover:opacity-50 transition-opacity">
-             <h3 className="text-2xl font-serif tracking-widest">HAUTIQUE</h3>
+             <h3 className="text-2xl  tracking-widest">HAUTIQUE</h3>
              <p className="text-[8px] uppercase tracking-[0.5em] mt-2">The Art of Scent</p>
           </div>
         </div>

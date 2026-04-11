@@ -188,7 +188,7 @@ export default function SettingsPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-serif tracking-tight">Store Settings</h1>
+        <h1 className="text-4xl  tracking-tight">Store Settings</h1>
         <p className="text-neutral-400 text-sm uppercase tracking-widest">Configure your boutique&apos;s global parameters</p>
       </div>
 
@@ -205,7 +205,7 @@ export default function SettingsPage() {
                 <Truck className="w-6 h-6 text-black" />
               </div>
               <div>
-                <h2 className="text-xl font-serif">Delivery Logistics</h2>
+                <h2 className="text-xl ">Delivery Logistics</h2>
                 <p className="text-xs text-neutral-400 uppercase tracking-widest mt-1">Manage shipping costs and fees</p>
               </div>
             </div>
@@ -229,7 +229,7 @@ export default function SettingsPage() {
                       type="number"
                       value={shippingFee}
                       onChange={(e) => setShippingFee(Math.max(0, Number(e.target.value)))}
-                      className="w-full bg-neutral-50 border border-border rounded-xl pl-14 pr-5 py-3 text-lg text-center focus:outline-none focus:ring-2 focus:ring-black/10 transition-all font-serif font-bold"
+                      className="w-full bg-neutral-50 border border-border rounded-xl pl-14 pr-5 py-3 text-lg text-center focus:outline-none focus:ring-2 focus:ring-black/10 transition-all  font-bold"
                       placeholder="0"
                       min="0"
                     />
@@ -270,7 +270,7 @@ export default function SettingsPage() {
         {/* Info Sidebar */}
         <div className="space-y-6">
           <div className="bg-black text-white p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-serif italic text-neutral-400">Pro Tip</h3>
+            <h3 className="text-sm  italic text-neutral-400">Pro Tip</h3>
             <p className="text-xs leading-relaxed text-neutral-300">
               Consider seasonal promotions where you set the shipping fee to PKR 0 to encourage higher conversion rates.
             </p>
@@ -281,11 +281,11 @@ export default function SettingsPage() {
             <div className="space-y-3 pt-2">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-neutral-500 italic">Current Fee</span>
-                <span className="font-bold font-serif">PKR {shippingFee.toLocaleString()}</span>
+                <span className="font-bold ">PKR {shippingFee.toLocaleString()}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
                 <span className="text-neutral-500 italic">Method</span>
-                <span className="font-bold font-serif">Standard Flat Rate</span>
+                <span className="font-bold ">Standard Flat Rate</span>
               </div>
             </div>
           </div>
@@ -295,7 +295,7 @@ export default function SettingsPage() {
       {/* Admin Management Section */}
       <div className="pt-12 border-t border-border">
         <div className="flex flex-col gap-2 mb-8">
-          <h2 className="text-3xl font-serif tracking-tight">Admin Accounts</h2>
+          <h2 className="text-3xl  tracking-tight">Admin Accounts</h2>
           <p className="text-neutral-400 text-sm uppercase tracking-widest">Manage authorized personnel access</p>
         </div>
 
@@ -417,7 +417,7 @@ export default function SettingsPage() {
       {/* Change Your Password Section */}
       <div className="pt-12 border-t border-border">
         <div className="flex flex-col gap-2 mb-8">
-          <h2 className="text-3xl font-serif tracking-tight">Change Password</h2>
+          <h2 className="text-3xl  tracking-tight">Change Password</h2>
           <p className="text-neutral-400 text-sm uppercase tracking-widest">Update credentials for an admin account</p>
         </div>
 
@@ -433,7 +433,7 @@ export default function SettingsPage() {
                   <KeyRound className="w-6 h-6 text-black" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-serif">Update Credentials</h3>
+                  <h3 className="text-xl ">Update Credentials</h3>
                   <p className="text-xs text-neutral-400 uppercase tracking-widest mt-1">Select an admin and change their password</p>
                 </div>
               </div>
@@ -585,7 +585,7 @@ export default function SettingsPage() {
                   <KeyRound className="w-5 h-5 text-black" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-serif">Change Password</h2>
+                  <h2 className="text-xl ">Change Password</h2>
                   <p className="text-[9px] uppercase tracking-widest text-neutral-400 font-bold">
                     {admins.find(a => a.id === passwordModal)?.email}
                   </p>

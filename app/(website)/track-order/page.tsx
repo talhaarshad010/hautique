@@ -40,7 +40,7 @@ export default function TrackOrderSearchPage() {
         transition={{ duration: 0.8 }}
         className="text-center mb-16"
       >
-        <h1 className="text-5xl font-serif mb-6 tracking-tight">Track Your Order</h1>
+        <h1 className="text-5xl  mb-6 tracking-tight">Track Your Order</h1>
         <p className="text-neutral-500 max-w-lg mx-auto uppercase tracking-widest text-[10px] leading-loose">
           Enter your order ID from your confirmation email to check the current status of your luxury fragrance delivery.
         </p>

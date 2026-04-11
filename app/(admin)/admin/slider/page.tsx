@@ -124,7 +124,7 @@ export default function AdminSliderPage() {
     <div className="space-y-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-serif tracking-tight uppercase mb-2">Hero Slider</h1>
+          <h1 className="text-4xl  tracking-tight uppercase mb-2">Hero Slider</h1>
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Manage your homepage visuals and messaging.</p>
         </div>
         <Button 
@@ -179,7 +179,7 @@ export default function AdminSliderPage() {
                 </div>
                 <div className="p-6 flex-grow bg-white">
                   <span className="text-[8px] uppercase tracking-[0.3em] text-neutral-400 mb-2 block font-bold">{slide.tag || 'NO TAGLINE'}</span>
-                  <h3 className="text-xl font-serif leading-tight whitespace-pre-line">{slide.title}</h3>
+                  <h3 className="text-xl  leading-tight whitespace-pre-line">{slide.title}</h3>
                 </div>
               </Card>
             </motion.div>
@@ -206,7 +206,7 @@ export default function AdminSliderPage() {
             >
               <div className="flex justify-between items-start mb-10">
                 <div>
-                  <h2 className="text-3xl font-serif uppercase tracking-tight mb-2">
+                  <h2 className="text-3xl  uppercase tracking-tight mb-2">
                     {editingSlideId ? 'Edit Slide' : 'Add New Slide'}
                   </h2>
                   <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">Configure your hero masterpiece</p>
@@ -264,7 +264,7 @@ export default function AdminSliderPage() {
                   <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Main Title (Use \n for line breaks)</label>
                   <textarea 
                     placeholder="The Art of Scent\nInvisible Luxury"
-                    className="w-full bg-neutral-50 border-none p-4 text-xl font-serif focus:outline-none min-h-[100px] leading-tight"
+                    className="w-full bg-neutral-50 border-none p-4 text-xl  focus:outline-none min-h-[100px] leading-tight"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     required

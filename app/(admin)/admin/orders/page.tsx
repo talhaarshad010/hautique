@@ -50,7 +50,7 @@ export default function AdminOrdersPage() {
     <div className="space-y-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-serif tracking-tight uppercase mb-2">Orders</h1>
+          <h1 className="text-4xl  tracking-tight uppercase mb-2">Orders</h1>
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Track and manage customer orders and fulfillment.</p>
         </div>
         <Button variant="outline" className="w-full sm:w-auto text-[10px] uppercase tracking-widest h-10 px-8">
@@ -128,7 +128,7 @@ export default function AdminOrdersPage() {
                     {order.status}
                   </button>
                 </td>
-                <td className="px-6 py-6 text-sm font-serif">PKR {order.total}.00</td>
+                <td className="px-6 py-6 text-sm ">PKR {order.total}.00</td>
                 <td className="px-6 py-6 text-right">
                   <div className="flex justify-end gap-2">
                     <Link href={`/admin/orders/${order.id}`}>

@@ -52,7 +52,7 @@ export default function DealsPage() {
   return (
     <div className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
       <div className="max-w-xl mb-24">
-        <h1 className="text-5xl md:text-7xl font-serif mb-8 leading-tight uppercase tracking-tight">The Private Collection</h1>
+        <h1 className="text-5xl md:text-7xl  mb-8 leading-tight uppercase tracking-tight">The Private Collection</h1>
         <p className="text-neutral-500 leading-relaxed max-w-md text-sm uppercase tracking-widest font-bold">
           Exclusive seasonal campaigns and limited-time promotional logic. Discover your next signature scent at an exceptional value.
         </p>
@@ -101,20 +101,20 @@ export default function DealsPage() {
                       <Tag className="w-3 h-3" />
                       <span>Campaign Active</span>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-serif leading-tight">{deal.name}</h2>
+                    <h2 className="text-4xl md:text-5xl  leading-tight">{deal.name}</h2>
                     <p className="text-neutral-500 uppercase tracking-widest text-xs font-bold">{deal.subtextText}</p>
                   </div>
 
                   <div className="space-y-6">
                     <div className="flex items-center gap-4 text-xs">
                       <Calendar className="w-4 h-4 text-neutral-300" />
-                      <span className="text-neutral-400 font-serif italic">{deal.durationRange}</span>
+                      <span className="text-neutral-400  italic">{deal.durationRange}</span>
                     </div>
                     
                     {deal.price && (
                       <div className="pt-4 pb-2 border-b border-neutral-100">
                         <p className="text-[10px] uppercase tracking-widest text-neutral-400 mb-1 font-bold">Featured Price</p>
-                        <p className="text-3xl font-serif">${deal.price}.00</p>
+                        <p className="text-3xl ">${deal.price}.00</p>
                       </div>
                     )}
 

@@ -70,7 +70,7 @@ const Hero = ({ dynamicSlides }: { dynamicSlides?: any[] }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-5xl md:text-8xl font-serif mb-8 max-w-4xl leading-tight whitespace-pre-line"
+              className="text-5xl md:text-8xl  mb-8 max-w-4xl leading-tight whitespace-pre-line"
             >
               {slides[currentSlide].title}
             </motion.h1>
@@ -122,8 +122,8 @@ const ProductCard = ({ product }: { product: Product }) => {
       </Link>
       <div className="p-8 flex flex-col items-center text-center">
         <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2 font-bold">{product.category}</span>
-        <h3 className="text-xl font-serif mb-2 group-hover:underline underline-offset-8 transition-all">{product.name}</h3>
-        <p className="text-sm font-serif tracking-widest mb-8 text-neutral-500">PKR {product.price}.00</p>
+        <h3 className="text-xl  mb-2 group-hover:underline underline-offset-8 transition-all">{product.name}</h3>
+        <p className="text-sm  tracking-widest mb-8 text-neutral-500">PKR {product.price}.00</p>
         <Button variant="outline" size="sm" className="w-full rounded-none border-neutral-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all text-[10px] uppercase tracking-widest h-12 font-bold">
           <ShoppingCart className="w-4 h-4 mr-2" />
           Add to Cart
@@ -151,7 +151,7 @@ const ProductGrid = ({ title, products, loading }: { title: string; products: Pr
       <div className="flex justify-between items-end mb-16 border-b border-neutral-100 pb-8">
         <div>
           <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-4 block font-bold">Curation</span>
-          <h2 className="text-4xl md:text-5xl font-serif">{title}</h2>
+          <h2 className="text-4xl md:text-5xl ">{title}</h2>
         </div>
         <Link href="/shop" className="text-[10px] uppercase tracking-[0.2em] font-bold flex items-center gap-3 hover:gap-5 transition-all group border-b border-black pb-1">
           Explore All <ArrowRight className="w-4 h-4" />
@@ -220,16 +220,6 @@ export default function HomePage() {
         <ProductGrid title="For Him" products={forHim} loading={loading} />
       </div>
 
-      <section className="py-24 border-y border-neutral-100 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-400 mb-10 font-bold">Newsletter</span>
-            <h2 className="text-4xl md:text-5xl font-serif mb-12">Join the Hautique Society</h2>
-            <div className="flex w-full max-w-md gap-4">
-              <Input placeholder="Enter your email" className="rounded-none border-neutral-100 bg-neutral-50 h-14 text-sm" />
-              <Button className="rounded-none h-14 px-10 text-[10px] uppercase tracking-widest font-bold">Join</Button>
-            </div>
-        </div>
-      </section>
     </div>
   );
 }

@@ -255,7 +255,7 @@ const OrderToast = ({ order, onDismiss }: { order: any; onDismiss: () => void })
       </div>
       <div className="flex-grow min-w-0">
         <p className="text-[10px] uppercase tracking-widest font-bold text-green-400 mb-1">New Order Received</p>
-        <p className="text-sm font-serif truncate">{order?.customerName || 'Customer'}</p>
+        <p className="text-sm  truncate">{order?.customerName || 'Customer'}</p>
         <p className="text-xs text-neutral-400 mt-0.5">
           {order?.id || 'New Order'} — PKR {Number(order?.total || 0).toLocaleString()}
         </p>

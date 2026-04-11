@@ -136,7 +136,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
         <div className="w-full lg:w-1/2 flex flex-col">
           <div className="mb-8">
             <span className="text-xs uppercase tracking-[0.3em] text-neutral-400 mb-4 block">{product.brand}</span>
-            <h1 className="text-4xl md:text-5xl font-serif mb-4 leading-tight">{product.name}</h1>
+            <h1 className="text-4xl md:text-5xl  mb-4 leading-tight">{product.name}</h1>
             <p className="text-2xl font-medium">PKR {product.price}.00</p>
           </div>
 
@@ -234,7 +234,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
       <section className="pt-24 mb-24 border-t border-border">
         <div className="flex flex-col md:flex-row justify-between items-start gap-12">
           <div className="w-full md:w-1/3">
-            <h2 className="text-3xl font-serif mb-6">Customer Reviews</h2>
+            <h2 className="text-3xl  mb-6">Customer Reviews</h2>
             <div className="flex items-center gap-4 mb-4">
               <div className="flex text-black">
                 {[1, 2, 3, 4, 5].map((s) => (
@@ -346,7 +346,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
 
       {relatedProducts.length > 0 && (
         <section className="pt-24 border-t border-border">
-          <h2 className="text-3xl font-serif mb-12">You May Also Like</h2>
+          <h2 className="text-3xl  mb-12">You May Also Like</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {relatedProducts.map((p) => (
               <motion.div
@@ -362,7 +362,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
                   />
                 </a>
                 <div className="p-6 text-center">
-                  <h3 className="text-lg font-serif mb-2">{p.name}</h3>
+                  <h3 className="text-lg  mb-2">{p.name}</h3>
                   <p className="text-sm font-medium">PKR {p.price}.00</p>
                 </div>
               </motion.div>

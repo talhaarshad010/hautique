@@ -205,7 +205,7 @@ export default function DealsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h1 className="text-4xl font-serif tracking-tight uppercase mb-2">Campaigns & Deals</h1>
+          <h1 className="text-4xl  tracking-tight uppercase mb-2">Campaigns & Deals</h1>
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Configure promotional logic for the store.</p>
         </div>
         <Button 
@@ -275,7 +275,7 @@ export default function DealsPage() {
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex flex-col">
-                        <span className="text-lg font-serif">${deal.price || 0}.00</span>
+                        <span className="text-lg ">${deal.price || 0}.00</span>
                       </div>
                     </td>
                     <td className="px-8 py-6">
@@ -343,7 +343,7 @@ export default function DealsPage() {
               <div className="sticky top-0 bg-white z-10 px-10 pt-10 pb-6 border-b border-neutral-100">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-3xl font-serif uppercase tracking-tight mb-2">
+                    <h2 className="text-3xl  uppercase tracking-tight mb-2">
                       {editingDealId ? 'Edit Deal' : 'Create New Deal'}
                     </h2>
                     <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">Define promotional parameters</p>
@@ -405,7 +405,7 @@ export default function DealsPage() {
                         }}
                       />
                     </div>
-                    <span className="text-neutral-300 font-serif">—</span>
+                    <span className="text-neutral-300 ">—</span>
                     <div className="flex-1">
                       <Input 
                         type="date"

@@ -32,8 +32,8 @@ const ProductCard = ({ product }: { product: Product }) => {
       </Link>
       <div className="p-8 flex flex-col items-center text-center">
         <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2 font-bold">Category</span>
-        <h3 className="text-xl font-serif mb-2 group-hover:underline underline-offset-8 transition-all">{product.name}</h3>
-        <p className="text-sm font-serif tracking-widest mb-8 text-neutral-500">PKR {product.price}.00</p>
+        <h3 className="text-xl  mb-2 group-hover:underline underline-offset-8 transition-all">{product.name}</h3>
+        <p className="text-sm  tracking-widest mb-8 text-neutral-500">PKR {product.price}.00</p>
         <Button variant="outline" size="sm" className="w-full rounded-none border-neutral-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all text-[10px] uppercase tracking-widest h-12 font-bold">
           <ShoppingCart className="w-4 h-4 mr-2" />
           Add to Cart
@@ -74,7 +74,7 @@ export default function ForHimPage() {
       <div className="flex flex-col md:flex-row items-center gap-12 mb-24 bg-neutral-900 text-white p-8 md:p-16">
         <div className="w-full md:w-1/2">
           <span className="text-xs uppercase tracking-[0.3em] text-neutral-500 mb-4 block">Masculine Collection</span>
-          <h1 className="text-5xl md:text-7xl font-serif mb-8 leading-tight">For Him</h1>
+          <h1 className="text-5xl md:text-7xl  mb-8 leading-tight">For Him</h1>
           <p className="text-neutral-400 leading-relaxed mb-10">
             A bold selection of woody, spicy, and fresh fragrances designed for the modern man. From classic sophisticated scents to adventurous contemporary blends.
           </p>

@@ -38,8 +38,8 @@ const ProductCard = ({ product, addToCart }: { product: Product; addToCart: (pro
       </Link>
       <div className="p-8 flex flex-col items-center text-center">
         <span className="text-[9px] uppercase tracking-[0.3em] text-neutral-400 mb-2 font-bold">{product.category}</span>
-        <h3 className="text-lg font-serif mb-2 group-hover:underline underline-offset-8 decoration-neutral-300">{product.name}</h3>
-        <p className="text-sm font-serif tracking-widest text-neutral-500 mb-8">PKR {product.price}.00</p>
+        <h3 className="text-lg  mb-2 group-hover:underline underline-offset-8 decoration-neutral-300">{product.name}</h3>
+        <p className="text-sm  tracking-widest text-neutral-500 mb-8">PKR {product.price}.00</p>
         <Button 
           variant={added ? "primary" : "outline"} 
           size="sm" 
@@ -107,7 +107,7 @@ function ShopContent() {
     <div className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
         <div className="max-w-xl">
-          <h1 className="text-5xl md:text-7xl font-serif mb-8 leading-tight">The Boutique</h1>
+          <h1 className="text-5xl md:text-7xl  mb-8 leading-tight">The Boutique</h1>
           <p className="text-neutral-500 leading-relaxed max-w-md">
             Explore our complete collection of niche and designer fragrances. Filter by category or search for your signature scent.
           </p>

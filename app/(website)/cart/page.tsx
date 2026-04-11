@@ -37,7 +37,7 @@ export default function CartPage() {
         className="min-h-screen pt-32 px-6 flex flex-col items-center justify-center text-center"
       >
         <ShoppingBag className="w-16 h-16 text-neutral-200 mb-6" />
-        <h1 className="text-3xl font-serif mb-4">Your cart is empty</h1>
+        <h1 className="text-3xl  mb-4">Your cart is empty</h1>
         <p className="text-neutral-500 mb-8 max-w-md">Looks like you haven&apos;t added any fragrances to your collection yet.</p>
         <Link href="/shop">
           <Button size="lg">Continue Shopping</Button>
@@ -57,7 +57,7 @@ export default function CartPage() {
         <Link href="/shop" className="hover:opacity-60 transition-opacity">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-4xl font-serif">Shopping Cart</h1>
+        <h1 className="text-4xl ">Shopping Cart</h1>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-12">
@@ -76,7 +76,7 @@ export default function CartPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="text-[10px] uppercase tracking-widest text-neutral-400 mb-1 block">{item.category}</span>
-                    <h3 className="text-lg font-serif">{item.name}</h3>
+                    <h3 className="text-lg ">{item.name}</h3>
                   </div>
                   <button
                     onClick={() => removeFromCart(item.id, item.selectedSize)}
@@ -111,7 +111,7 @@ export default function CartPage() {
         {/* Summary */}
         <div className="w-full lg:w-1/3">
           <Card className="sticky top-32">
-            <h2 className="text-xl font-serif mb-8 border-b border-border pb-4">Order Summary</h2>
+            <h2 className="text-xl  mb-8 border-b border-border pb-4">Order Summary</h2>
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Subtotal</span>

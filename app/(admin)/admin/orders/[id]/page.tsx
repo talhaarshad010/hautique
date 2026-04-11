@@ -105,7 +105,7 @@ export default function OrderDetailPage() {
   if (!order) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
-        <h1 className="text-2xl font-serif">Order Not Found</h1>
+        <h1 className="text-2xl ">Order Not Found</h1>
         <p className="text-neutral-400 text-xs uppercase tracking-widest">The order ID {orderId} does not exist in our records.</p>
         <Button onClick={() => router.back()}>Go Back</Button>
       </div>
@@ -125,7 +125,7 @@ export default function OrderDetailPage() {
             Back to Orders
           </button>
           <div className="flex items-center gap-4">
-            <h1 className="text-4xl font-serif tracking-tight uppercase">Order {order.id}</h1>
+            <h1 className="text-4xl  tracking-tight uppercase">Order {order.id}</h1>
             <span className={cn(
               "text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full",
               order.status === 'Delivered' ? 'bg-green-50 text-green-700' :
@@ -197,8 +197,8 @@ export default function OrderDetailPage() {
                       </div>
                       <p className="text-[10px] text-neutral-400 uppercase tracking-widest mb-2">Quantity: {item.quantity}</p>
                       <div className="flex justify-between items-end">
-                        <p className="text-xs font-serif text-neutral-500">PKR {item.price}.00 x {item.quantity}</p>
-                        <p className="text-sm font-serif font-bold">PKR {item.price * item.quantity}.00</p>
+                        <p className="text-xs  text-neutral-500">PKR {item.price}.00 x {item.quantity}</p>
+                        <p className="text-sm  font-bold">PKR {item.price * item.quantity}.00</p>
                       </div>
                     </div>
                   </div>
@@ -237,7 +237,7 @@ export default function OrderDetailPage() {
               </div>
               <div className="pt-3 border-t border-neutral-200 flex justify-between text-sm font-bold uppercase tracking-[0.2em]">
                 <span>Total</span>
-                <span className="font-serif text-lg">PKR {order.total}.00</span>
+                <span className=" text-lg">PKR {order.total}.00</span>
               </div>
             </div>
           </Card>

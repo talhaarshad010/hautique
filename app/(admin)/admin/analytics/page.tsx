@@ -42,7 +42,7 @@ const StatCard = ({ title, value, icon: Icon }: { title: string; value: string; 
         <Icon className="w-4 h-4 text-neutral-500" />
       </div>
     </div>
-    <h3 className="text-3xl font-serif">{value}</h3>
+    <h3 className="text-3xl ">{value}</h3>
   </Card>
 );
 
@@ -70,7 +70,7 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h1 className="text-4xl font-serif tracking-tight uppercase mb-2">Analytics Overview</h1>
+          <h1 className="text-4xl  tracking-tight uppercase mb-2">Analytics Overview</h1>
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">
             Live performance data from your store
           </p>
@@ -124,7 +124,7 @@ export default function AnalyticsPage() {
         <Card className="lg:col-span-2 p-8 border-none shadow-sm bg-white">
           <div className="flex justify-between items-start mb-10">
             <div>
-              <h3 className="text-xl font-serif uppercase tracking-tight mb-1">Revenue Velocity</h3>
+              <h3 className="text-xl  uppercase tracking-tight mb-1">Revenue Velocity</h3>
               <p className="text-[10px] uppercase tracking-widest text-neutral-400">Daily transactional volume in PKR</p>
             </div>
             <div className="flex items-center gap-2">
@@ -174,7 +174,7 @@ export default function AnalyticsPage() {
         {/* Category Breakdown & Delivery Rate */}
         <div className="space-y-6">
           <Card className="p-8 border-none shadow-sm bg-neutral-100">
-            <h3 className="text-xl font-serif uppercase tracking-tight mb-8">Category Mix</h3>
+            <h3 className="text-xl  uppercase tracking-tight mb-8">Category Mix</h3>
             <div className="space-y-8">
               {data.categoryBreakdown.length > 0 ? (
                 data.categoryBreakdown.map((item) => (
@@ -215,7 +215,7 @@ export default function AnalyticsPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-2xl font-serif">{data.deliveryRate}%</span>
+                  <span className="text-2xl ">{data.deliveryRate}%</span>
                   <span className="text-[8px] uppercase tracking-widest text-neutral-400">Delivered</span>
                 </div>
               </div>
@@ -229,7 +229,7 @@ export default function AnalyticsPage() {
         {/* Order Status Summary */}
         <Card className="p-8 border-none shadow-sm bg-black text-white relative overflow-hidden flex flex-col justify-between min-h-[400px]">
           <div className="relative z-10">
-            <h3 className="text-3xl font-serif uppercase leading-tight mb-4">Order<br />Status</h3>
+            <h3 className="text-3xl  uppercase leading-tight mb-4">Order<br />Status</h3>
             <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold">Current Order Pipeline</p>
           </div>
           
@@ -239,21 +239,21 @@ export default function AnalyticsPage() {
                 <Clock className="w-4 h-4 text-yellow-400" />
                 <span className="text-[10px] uppercase tracking-widest font-bold">Pending</span>
               </div>
-              <span className="text-2xl font-serif">{data.pendingOrders}</span>
+              <span className="text-2xl ">{data.pendingOrders}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CheckCircle2 className="w-4 h-4 text-green-400" />
                 <span className="text-[10px] uppercase tracking-widest font-bold">Delivered</span>
               </div>
-              <span className="text-2xl font-serif">{data.deliveredOrders}</span>
+              <span className="text-2xl ">{data.deliveredOrders}</span>
             </div>
             <div className="flex items-center justify-between border-t border-neutral-700 pt-4">
               <div className="flex items-center gap-3">
                 <Truck className="w-4 h-4 text-white" />
                 <span className="text-[10px] uppercase tracking-widest font-bold">Total Orders</span>
               </div>
-              <span className="text-2xl font-serif">{data.totalOrders}</span>
+              <span className="text-2xl ">{data.totalOrders}</span>
             </div>
           </div>
 
@@ -269,7 +269,7 @@ export default function AnalyticsPage() {
         {/* Regional Performance */}
         <Card className="lg:col-span-2 p-8 border-none shadow-sm bg-white">
           <div className="flex justify-between items-center mb-10">
-            <h3 className="text-xl font-serif uppercase tracking-tight">City Performance</h3>
+            <h3 className="text-xl  uppercase tracking-tight">City Performance</h3>
             <span className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">
               Top {data.topCities.length} cities
             </span>
@@ -284,7 +284,7 @@ export default function AnalyticsPage() {
                     <span className="text-xs font-bold uppercase tracking-widest">{item.city}</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-serif mb-1">PKR {item.revenue.toLocaleString()}</div>
+                    <div className="text-lg  mb-1">PKR {item.revenue.toLocaleString()}</div>
                     <div className={cn(
                       "text-[8px] uppercase tracking-widest font-bold",
                       idx === 0 ? "text-green-600" : "text-neutral-400"
@@ -307,7 +307,7 @@ export default function AnalyticsPage() {
       {data.topProducts.length > 0 && (
         <Card className="p-8 border-none shadow-sm bg-white">
           <div className="flex justify-between items-center mb-10">
-            <h3 className="text-xl font-serif uppercase tracking-tight">Top Selling Products</h3>
+            <h3 className="text-xl  uppercase tracking-tight">Top Selling Products</h3>
             <span className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">
               By quantity sold
             </span>
@@ -328,7 +328,7 @@ export default function AnalyticsPage() {
                     </div>
                   </div>
                   <div className="text-right min-w-[120px]">
-                    <div className="text-sm font-serif">PKR {product.revenue.toLocaleString()}</div>
+                    <div className="text-sm ">PKR {product.revenue.toLocaleString()}</div>
                   </div>
                 </div>
               </div>
@@ -339,7 +339,7 @@ export default function AnalyticsPage() {
 
       {/* Footer Branding */}
       <div className="pt-20 pb-10 border-t border-neutral-100 text-center">
-        <h2 className="text-2xl font-serif tracking-[0.3em] mb-6">HAUTIQUE</h2>
+        <h2 className="text-2xl  tracking-[0.3em] mb-6">HAUTIQUE</h2>
         <p className="text-[8px] uppercase tracking-widest text-neutral-400 mb-8">
           © 2024 HAUTIQUE. SYSTEM AUTHENTICATED. ANALYTICS ENGINE V3.0
         </p>

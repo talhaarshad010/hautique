@@ -32,8 +32,8 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
       </Link>
       <div className="p-8 flex flex-col items-center text-center">
-        <h3 className="text-lg font-serif mb-2 group-hover:underline underline-offset-4">{product.name}</h3>
-        <p className="text-xs font-serif tracking-widest mb-6 text-neutral-500">${product.price}.00</p>
+        <h3 className="text-lg  mb-2 group-hover:underline underline-offset-4">{product.name}</h3>
+        <p className="text-xs  tracking-widest mb-6 text-neutral-500">${product.price}.00</p>
         <Button variant="outline" size="sm" className="w-full rounded-none border-neutral-200 group-hover:bg-black group-hover:text-white transition-all text-[10px] uppercase tracking-widest h-10">
           Add to Cart
         </Button>
@@ -71,7 +71,7 @@ export default function TestersPage() {
     >
       <div className="text-center mb-24 max-w-2xl mx-auto">
         <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-400 mb-4 block font-bold">Discover Excellence</span>
-        <h1 className="text-5xl md:text-6xl font-serif mb-8">Try Our Testers</h1>
+        <h1 className="text-5xl md:text-6xl  mb-8">Try Our Testers</h1>
         <p className="text-neutral-500 leading-relaxed italic">
           "Experience luxury before you commit. Our testers are identical to the original scents, providing the same trail and longevity in simpler packaging."
         </p>

@@ -52,7 +52,7 @@ const Navbar = () => {
         <button className="lg:hidden" onClick={() => setIsOpen(true)}>
           <Menu className="w-6 h-6" />
         </button>
-        <Link href="/" className="text-2xl font-serif tracking-tighter font-bold">
+        <Link href="/" className="text-2xl  tracking-tighter font-bold">
           HAUTIQUE
         </Link>
       </div>
@@ -143,7 +143,7 @@ const Navbar = () => {
               className="fixed top-0 left-0 bottom-0 w-[80%] max-w-sm bg-white z-[70] p-8 flex flex-col"
             >
               <div className="flex justify-between items-center mb-12">
-                <span className="text-xl font-serif font-bold">HAUTIQUE</span>
+                <span className="text-xl  font-bold">HAUTIQUE</span>
                 <button onClick={() => setIsOpen(false)}>
                   <X className="w-6 h-6" />
                 </button>
@@ -180,9 +180,9 @@ const Navbar = () => {
 
 const Footer = () => (
   <footer className="bg-black text-white px-6 md:px-12 py-16">
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
       <div className="md:col-span-1">
-        <h3 className="text-2xl font-serif font-bold mb-6">HAUTIQUE</h3>
+        <h3 className="text-2xl  font-bold mb-6">HAUTIQUE</h3>
         <p className="text-neutral-400 text-sm leading-relaxed">
           Crafting timeless scents for the modern individual. Experience the art of luxury perfumery.
         </p>
@@ -200,23 +200,11 @@ const Footer = () => (
         <h4 className="text-sm uppercase tracking-widest font-bold mb-6">Support</h4>
         <ul className="flex flex-col gap-4 text-neutral-400 text-sm">
           <li><Link href="/track-order" className="text-white hover:text-white font-bold transition-colors">Track Order</Link></li>
-          <li><Link href="#" className="hover:text-white transition-colors">Shipping Policy</Link></li>
-          <li><Link href="#" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
-          <li><Link href="#" className="hover:text-white transition-colors">FAQs</Link></li>
-          <li><Link href="#" className="hover:text-white transition-colors">Contact Us</Link></li>
+          <li><Link href="/shipping-policy" className="hover:text-white transition-colors">Shipping Policy</Link></li>
+          <li><Link href="/returns-exchanges" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
+          <li><Link href="/faqs" className="hover:text-white transition-colors">FAQs</Link></li>
+          <li><Link href="/contact-us" className="hover:text-white transition-colors">Contact Us</Link></li>
         </ul>
-      </div>
-      <div>
-        <h4 className="text-sm uppercase tracking-widest font-bold mb-6">Newsletter</h4>
-        <p className="text-neutral-400 text-sm mb-4">Subscribe to receive updates and exclusive offers.</p>
-        <div className="flex gap-2">
-          <input
-            type="email"
-            placeholder="Email Address"
-            className="bg-neutral-900 border border-neutral-800 px-4 py-2 text-sm w-full focus:outline-none focus:border-white transition-colors"
-          />
-          <Button size="sm" className="bg-white text-black hover:bg-neutral-200">Join</Button>
-        </div>
       </div>
     </div>
     <div className="pt-8 border-t border-neutral-800 flex flex-col md:row justify-between items-center gap-4 text-[10px] uppercase tracking-widest text-neutral-500">

@@ -96,7 +96,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-12">
       <div>
-        <h1 className="text-4xl font-serif tracking-tight uppercase mb-2">Executive Overview</h1>
+        <h1 className="text-4xl  tracking-tight uppercase mb-2">Executive Overview</h1>
         <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Real-time performance analytics and store activity.</p>
       </div>
 
@@ -109,7 +109,7 @@ export default function DashboardPage() {
       {/* Recent Orders */}
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-serif">Recent Orders</h2>
+          <h2 className="text-2xl ">Recent Orders</h2>
           <button 
             onClick={() => router.push('/admin/orders')}
             className="text-xs uppercase tracking-widest font-bold hover:underline"
