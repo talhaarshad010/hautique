@@ -67,7 +67,7 @@ const ProductCard = ({ product, addToCart }: { product: Product; addToCart: (pro
   );
 };
 
-export default function ShopPage() {
+function ShopContent() {
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   
@@ -166,3 +166,17 @@ export default function ShopPage() {
     </div>
   );
 }
+
+export default function ShopPage() {
+  return (
+    <React.Suspense fallback={
+      <div className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[50vh]">
+        <Loader2 className="w-10 h-10 animate-spin text-neutral-200" />
+        <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold mt-4">Opening the vault...</p>
+      </div>
+    }>
+      <ShopContent />
+    </React.Suspense>
+  );
+}
+

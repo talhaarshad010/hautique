@@ -14,7 +14,7 @@ import { database } from '@/lib/firebase';
 
 const CATEGORIES = ['For Her', 'For Him', 'Testers'] as const;
 
-export default function AdminProductsPage() {
+function AdminProductsContent() {
   const { pushData, loading: databaseLoading } = useDatabase();
   const { uploadFile, isUploading: storageLoading } = useCloudinary();
   const searchParams = useSearchParams();
@@ -536,3 +536,16 @@ export default function AdminProductsPage() {
     </div>
   );
 }
+
+export default function AdminProductsPage() {
+  return (
+    <React.Suspense fallback={
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-neutral-400" />
+      </div>
+    }>
+      <AdminProductsContent />
+    </React.Suspense>
+  );
+}
+
