@@ -195,14 +195,8 @@ export default function AdminProductsPage() {
 
       {/* Filters & Search */}
       <Card className="p-4 flex flex-col md:flex-row gap-4 border-none shadow-sm">
-        <div className="flex-grow relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-          <Input
-            placeholder="Search products..."
-            className="pl-12 border-none bg-neutral-50 focus-visible:ring-0 text-sm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="flex-grow">
+          {/* Internal search removed by user request */}
         </div>
         <div className="flex gap-4">
           <div className="relative">
@@ -266,7 +260,7 @@ export default function AdminProductsPage() {
                         {product.category}
                       </span>
                     </td>
-                    <td className="px-6 py-6 text-sm font-serif">${product.price}.00</td>
+                    <td className="px-6 py-6 text-sm font-serif">PKR {product.price}.00</td>
                     <td className="px-6 py-6">
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
@@ -364,7 +358,7 @@ export default function AdminProductsPage() {
                     </select>
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Price ($)</label>
+                    <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Price (PKR)</label>
                     <Input 
                       type="number" 
                       placeholder="120" 

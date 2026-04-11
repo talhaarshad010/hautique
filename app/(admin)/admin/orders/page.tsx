@@ -61,14 +61,8 @@ export default function AdminOrdersPage() {
 
       {/* Filters */}
       <Card className="p-4 flex flex-col md:flex-row gap-4 border-none shadow-sm">
-        <div className="flex-grow relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-          <Input 
-            placeholder="Search by Order ID or Customer..." 
-            className="pl-12 border-none bg-neutral-50 focus-visible:ring-0 text-sm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="flex-grow">
+          {/* Internal search removed by user request */}
         </div>
         <div className="flex gap-4">
           <Button variant="outline" className="text-[10px] uppercase tracking-widest h-10 px-6">
@@ -134,7 +128,7 @@ export default function AdminOrdersPage() {
                     {order.status}
                   </button>
                 </td>
-                <td className="px-6 py-6 text-sm font-serif">${order.total}.00</td>
+                <td className="px-6 py-6 text-sm font-serif">PKR {order.total}.00</td>
                 <td className="px-6 py-6 text-right">
                   <div className="flex justify-end gap-2">
                     <Link href={`/admin/orders/${order.id}`}>

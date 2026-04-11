@@ -275,7 +275,7 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm font-medium">${item.price * item.quantity}.00</p>
+                  <p className="text-sm font-medium">PKR {item.price * item.quantity}.00</p>
                 </div>
               ))}
             </div>
@@ -283,7 +283,7 @@ export default function CheckoutPage() {
             <div className="space-y-4 pt-6 border-t border-border">
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Subtotal</span>
-                <span>${cartTotal}.00</span>
+                <span>PKR {cartTotal}.00</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Shipping</span>
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
               </div>
               <div className="pt-4 border-t border-border flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span>${total}.00</span>
+                <span>PKR {total}.00</span>
               </div>
             </div>
 

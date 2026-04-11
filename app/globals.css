@@ -23,3 +23,13 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+ 
+.admin-panel *, 
+.admin-panel h1, 
+.admin-panel h2, 
+.admin-panel h3, 
+.admin-panel h4, 
+.admin-panel h5, 
+.admin-panel h6 {
+  font-family: var(--font-sans) !important;
+}

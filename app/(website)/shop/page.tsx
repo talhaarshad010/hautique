@@ -6,11 +6,11 @@ import { Button, Input, cn } from '@/components/ui';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingCart, Search, Loader2 } from 'lucide-react';
+import { Check, Search, ShoppingCart, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { ref, onValue } from 'firebase/database';
 import { database } from '@/lib/firebase';
 import { useCart } from '@/context/CartContext';
-import { Check } from 'lucide-react';
 
 const ProductCard = ({ product, addToCart }: { product: Product; addToCart: (product: Product) => void }) => {
   const [added, setAdded] = React.useState(false);
@@ -39,7 +39,7 @@ const ProductCard = ({ product, addToCart }: { product: Product; addToCart: (pro
       <div className="p-8 flex flex-col items-center text-center">
         <span className="text-[9px] uppercase tracking-[0.3em] text-neutral-400 mb-2 font-bold">{product.category}</span>
         <h3 className="text-lg font-serif mb-2 group-hover:underline underline-offset-8 decoration-neutral-300">{product.name}</h3>
-        <p className="text-sm font-serif tracking-widest text-neutral-500 mb-8">${product.price}.00</p>
+        <p className="text-sm font-serif tracking-widest text-neutral-500 mb-8">PKR {product.price}.00</p>
         <Button 
           variant={added ? "primary" : "outline"} 
           size="sm" 
@@ -68,9 +68,12 @@ const ProductCard = ({ product, addToCart }: { product: Product; addToCart: (pro
 };
 
 export default function ShopPage() {
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
+  
   const [productsList, setProductsList] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery, setSearchQuery] = React.useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = React.useState('All');
   const { addToCart } = useCart();
 

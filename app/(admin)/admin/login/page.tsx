@@ -4,22 +4,61 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Input, Card } from '@/components/ui';
 import { motion } from 'motion/react';
-import { Lock } from 'lucide-react';
+import { Lock, Loader2 } from 'lucide-react';
+import { ref, get } from 'firebase/database';
+import { database } from '@/lib/firebase';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple mock authentication
-    if (email === 'admin@hautique.com' && password === 'admin123') {
-      localStorage.setItem('admin_auth', 'true');
-      router.push('/admin/dashboard');
-    } else {
-      setError('Invalid credentials. Please try again.');
+    setError('');
+    setLoading(true);
+
+    try {
+      // 1. Fetch all admins from Firebase
+      const adminsRef = ref(database, 'admins');
+      const snapshot = await get(adminsRef);
+      const adminsData = snapshot.val();
+
+      let isAuthenticated = false;
+
+      if (!adminsData) {
+        // Fallback for first-time setup or if no admins exist in DB
+        if (email === 'admin@hautique.com' && password === 'admin123') {
+          isAuthenticated = true;
+        }
+      } else {
+        // Check against dynamic admins
+        const adminsList = Object.values(adminsData) as any[];
+        const matchedAdmin = adminsList.find(
+          (a) => a.email.toLowerCase() === email.toLowerCase() && a.password === password
+        );
+        
+        if (matchedAdmin) {
+          isAuthenticated = true;
+        } else if (email === 'admin@hautique.com' && password === 'admin123') {
+          // Keep hardcoded fallback as safety
+          isAuthenticated = true;
+        }
+      }
+
+      if (isAuthenticated) {
+        localStorage.setItem('admin_auth', 'true');
+        router.push('/admin/dashboard');
+      } else {
+        setError('Invalid credentials. Please try again.');
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError('An error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,8 +106,8 @@ export default function AdminLoginPage() {
 
             {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
 
-            <Button type="submit" className="w-full" size="lg">
-              Sign In
+            <Button type="submit" className="w-full h-12" size="lg" disabled={loading}>
+              {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Sign In'}
             </Button>
           </form>
 

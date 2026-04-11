@@ -25,9 +25,11 @@ const Navbar = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Searching for:', searchTerm);
-    // Implement search logic or redirect to search results page
-    setIsSearchOpen(false);
+    if (searchTerm.trim()) {
+      window.location.href = `/shop?search=${encodeURIComponent(searchTerm)}`;
+      setIsSearchOpen(false);
+      setSearchTerm('');
+    }
   };
 
   const navLinks = [

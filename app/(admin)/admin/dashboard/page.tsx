@@ -84,7 +84,7 @@ export default function DashboardPage() {
   const deliveredOrders = ordersList.filter(o => o.status === 'Delivered').length;
 
   const stats: { title: string; value: string; icon: any; trend: 'up' | 'down'; trendValue: string }[] = [
-    { title: 'Total Revenue', value: `$${totalRevenue.toLocaleString()}`, icon: DollarSign, trend: 'up', trendValue: '+12%' },
+    { title: 'Total Revenue', value: `PKR ${totalRevenue.toLocaleString()}`, icon: DollarSign, trend: 'up', trendValue: '+12%' },
     { title: 'Total Orders', value: ordersList.length.toString(), icon: ShoppingBag, trend: 'up', trendValue: '+8%' },
     { title: 'Total Products', value: productsCount.toString(), icon: TrendingUp, trend: 'up', trendValue: '+2%' },
     { title: 'Delivered', value: deliveredOrders.toString(), icon: Users, trend: 'up', trendValue: '+5%' },
@@ -146,7 +146,7 @@ export default function DashboardPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-neutral-500">{order.date}</td>
-                  <td className="px-6 py-4 text-sm font-bold text-right">${order.total}.00</td>
+                  <td className="px-6 py-4 text-sm font-bold text-right">PKR {order.total}.00</td>
                 </tr>
               ))}
             </tbody>

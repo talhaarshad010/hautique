@@ -86,7 +86,7 @@ export default function OrderDetailPage() {
     if (!order) return;
     
     const trackingLink = `${window.location.origin}/order-tracking/${order.id}`;
-    const message = `*HAUTIQUE - Luxury Fragrances*%0A%0AHello *${order.customerName}*,%0A%0AWe have an update on your order *${order.id}*.%0A%0A*Status:* ${order.status}%0A*Total:* $${order.total}.00%0A%0A*Items:*%0A${order.items?.map((item: any) => `- ${item.name} (${item.size || 'Standard'}) (x${item.quantity})`).join('%0A')}%0A%0AYou can track your real-time journey here:%0A${trackingLink}%0A%0AThank you for choosing Hautique.`;
+    const message = `*HAUTIQUE - Luxury Fragrances*%0A%0Ahello, *${order.customerName}*%0A%0AWe have an update on your order *${order.id}*.%0A%0A*Status:* ${order.status}%0A*Total:* PKR ${order.total}.00%0A%0A*Items:*%0A${order.items?.map((item: any) => `- ${item.name} (${item.size || 'Standard'}) (x${item.quantity})`).join('%0A')}%0A%0AYou can track your real-time journey here:%0A${trackingLink}%0A%0AThank you for choosing Hautique.`;
     
     // Clean phone number (remove spaces, etc)
     const phone = order.phone.replace(/[^0-9]/g, '');
@@ -197,8 +197,8 @@ export default function OrderDetailPage() {
                       </div>
                       <p className="text-[10px] text-neutral-400 uppercase tracking-widest mb-2">Quantity: {item.quantity}</p>
                       <div className="flex justify-between items-end">
-                        <p className="text-xs font-serif text-neutral-500">${item.price}.00 x {item.quantity}</p>
-                        <p className="text-sm font-serif font-bold">${item.price * item.quantity}.00</p>
+                        <p className="text-xs font-serif text-neutral-500">PKR {item.price}.00 x {item.quantity}</p>
+                        <p className="text-sm font-serif font-bold">PKR {item.price * item.quantity}.00</p>
                       </div>
                     </div>
                   </div>
@@ -208,7 +208,7 @@ export default function OrderDetailPage() {
             <div className="p-6 bg-neutral-50 space-y-3">
               <div className="flex justify-between text-[10px] uppercase tracking-widest text-neutral-500">
                 <span>Subtotal</span>
-                <span>${order.total - (order.shippingFee || 0)}.00</span>
+                <span>PKR {order.total - (order.shippingFee || 0)}.00</span>
               </div>
               <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-neutral-500">
                 <span>Shipping</span>
@@ -225,7 +225,7 @@ export default function OrderDetailPage() {
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 group/ship">
-                    <span>${order.shippingFee || 0}.00</span>
+                    <span>PKR {order.shippingFee || 0}.00</span>
                     <button 
                       onClick={() => setIsEditingShipping(true)}
                       className="opacity-0 group-hover/ship:opacity-100 transition-opacity p-1 text-neutral-400 hover:text-black print:hidden"
@@ -237,7 +237,7 @@ export default function OrderDetailPage() {
               </div>
               <div className="pt-3 border-t border-neutral-200 flex justify-between text-sm font-bold uppercase tracking-[0.2em]">
                 <span>Total</span>
-                <span className="font-serif text-lg">${order.total}.00</span>
+                <span className="font-serif text-lg">PKR {order.total}.00</span>
               </div>
             </div>
           </Card>

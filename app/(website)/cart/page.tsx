@@ -101,7 +101,7 @@ export default function CartPage() {
                       <Plus className="w-3 h-3" />
                     </button>
                   </div>
-                  <p className="font-medium">${item.price * item.quantity}.00</p>
+                  <p className="font-medium">PKR {item.price * item.quantity}.00</p>
                 </div>
               </div>
             </div>
@@ -115,15 +115,15 @@ export default function CartPage() {
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Subtotal</span>
-                <span>${cartTotal}.00</span>
+                <span>PKR {cartTotal}.00</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Shipping</span>
-                <span>${shipping}.00</span>
+                <span>PKR {shipping}.00</span>
               </div>
               <div className="pt-4 border-t border-border flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span>${total}.00</span>
+                <span>PKR {total}.00</span>
               </div>
             </div>
             <Link href="/checkout">

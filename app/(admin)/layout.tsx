@@ -56,7 +56,7 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (v: boolea
         )}
       >
         <div className="p-8 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-serif font-bold tracking-tighter">
+          <Link href="/" className="text-2xl font-sans font-bold tracking-tighter">
             HAUTIQUE
           </Link>
           <button className="lg:hidden" onClick={() => setIsOpen(false)}>
@@ -114,16 +114,9 @@ const Header = ({ setSidebarOpen }: { setSidebarOpen: (v: boolean) => void }) =>
         <button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
           <Menu className="w-6 h-6" />
         </button>
-        <form onSubmit={handleSearch} className="hidden md:flex items-center gap-2 bg-neutral-100 px-4 py-2 rounded-full w-64">
-          <Search className="w-4 h-4 text-neutral-400" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent text-sm w-full focus:outline-none"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </form>
+        <div className="hidden md:flex items-center gap-2 px-4 py-2 w-64 invisible">
+          {/* Search removed */}
+        </div>
       </div>
 
       <div className="flex items-center gap-6">
@@ -174,7 +167,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-50 font-sans admin-panel">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       <div className="lg:pl-64 flex flex-col min-h-screen">
         <Header setSidebarOpen={setSidebarOpen} />

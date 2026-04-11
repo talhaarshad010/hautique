@@ -33,7 +33,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="p-8 flex flex-col items-center text-center">
         <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2 font-bold">Category</span>
         <h3 className="text-xl font-serif mb-2 group-hover:underline underline-offset-8 transition-all">{product.name}</h3>
-        <p className="text-sm font-serif tracking-widest mb-8 text-neutral-500">${product.price}.00</p>
+        <p className="text-sm font-serif tracking-widest mb-8 text-neutral-500">PKR {product.price}.00</p>
         <Button variant="outline" size="sm" className="w-full rounded-none border-neutral-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all text-[10px] uppercase tracking-widest h-12 font-bold">
           <ShoppingCart className="w-4 h-4 mr-2" />
           Add to Cart
@@ -55,7 +55,7 @@ export default function ForHerPage() {
         const formattedProducts = Object.entries(data).map(([id, product]: [string, any]) => ({
           id,
           ...product
-        }));
+        })).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
         setProductsList(formattedProducts.filter(p => p.category === 'For Her'));
       }
       setLoading(false);

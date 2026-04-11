@@ -1,8 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'motion/react';
-import { ShoppingCart, Heart, Minus, Plus, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ShoppingCart, Heart, Minus, Plus, ShieldCheck, Truck, RotateCcw, Star, MessageSquare, Send, Loader2 } from 'lucide-react';
+import { push, set } from 'firebase/database';
 import { Button, Badge, cn } from '@/components/ui';
 import { type Product } from '@/lib/mock-data';
 import { useCart } from '@/context/CartContext';
@@ -22,6 +23,10 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
   const [selectedSize, setSelectedSize] = React.useState<string>(initialProduct.sizes?.[0] || '');
   const [isWishlisted, setIsWishlisted] = React.useState(false);
   const [relatedProducts, setRelatedProducts] = React.useState<Product[]>([]);
+  const [reviews, setReviews] = React.useState<any[]>([]);
+  const [isReviewLoading, setIsReviewLoading] = React.useState(false);
+  const [reviewForm, setReviewForm] = React.useState({ name: '', rating: 5, comment: '' });
+  const [showReviewForm, setShowReviewForm] = React.useState(false);
   const { addToCart } = useCart();
   const router = useRouter();
 
@@ -48,8 +53,47 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
       }
     }, { onlyOnce: true });
 
-    return () => unsubscribe();
+    // Fetch reviews
+    const reviewsRef = ref(database, `products/${productId}/reviews`);
+    const unsubscribeReviews = onValue(reviewsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formatted = Object.entries(data)
+          .map(([id, r]: [string, any]) => ({ id, ...r }))
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setReviews(formatted);
+      } else {
+        setReviews([]);
+      }
+    });
+ 
+    return () => {
+      unsubscribe();
+      unsubscribeReviews();
+    };
   }, [productId, initialProduct.category]);
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewForm.comment.trim()) return;
+    setIsReviewLoading(true);
+
+    try {
+      const newReviewRef = push(ref(database, `products/${productId}/reviews`));
+      await set(newReviewRef, {
+        name: reviewForm.name.trim() || 'Anonymous',
+        rating: reviewForm.rating,
+        comment: reviewForm.comment.trim(),
+        createdAt: new Date().toISOString()
+      });
+      setReviewForm({ name: '', rating: 5, comment: '' });
+      setShowReviewForm(false);
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+    } finally {
+      setIsReviewLoading(false);
+    }
+  };
 
 
   return (
@@ -93,7 +137,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
           <div className="mb-8">
             <span className="text-xs uppercase tracking-[0.3em] text-neutral-400 mb-4 block">{product.brand}</span>
             <h1 className="text-4xl md:text-5xl font-serif mb-4 leading-tight">{product.name}</h1>
-            <p className="text-2xl font-medium">${product.price}.00</p>
+            <p className="text-2xl font-medium">PKR {product.price}.00</p>
           </div>
 
           <p className="text-neutral-600 leading-relaxed mb-10 border-b border-border pb-10">
@@ -186,6 +230,120 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
         </div>
       </div>
 
+      {/* Reviews Section */}
+      <section className="pt-24 mb-24 border-t border-border">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-12">
+          <div className="w-full md:w-1/3">
+            <h2 className="text-3xl font-serif mb-6">Customer Reviews</h2>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex text-black">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star key={s} className={cn("w-5 h-5 fill-current", reviews.length > 0 && Math.round(reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length) >= s ? "text-black" : "text-neutral-200")} />
+                ))}
+              </div>
+              <span className="text-sm font-medium">{reviews.length} Reviews</span>
+            </div>
+            <Button 
+                variant="outline" 
+                className="w-full h-14 text-[10px] uppercase tracking-widest font-bold"
+                onClick={() => setShowReviewForm(!showReviewForm)}
+            >
+              <MessageSquare className="w-4 h-4 mr-2" />
+              {showReviewForm ? 'Cancel Review' : 'Write a Review'}
+            </Button>
+          </div>
+
+          <div className="w-full md:w-2/3">
+            <AnimatePresence>
+                {showReviewForm && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden mb-12"
+                  >
+                    <form onSubmit={handleReviewSubmit} className="bg-neutral-50 p-8 space-y-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Your Name (Optional)</label>
+                          <input 
+                            type="text" 
+                            placeholder="Anonymous"
+                            className="w-full bg-white border border-neutral-200 px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors"
+                            value={reviewForm.name}
+                            onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Rating</label>
+                          <div className="flex gap-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                type="button"
+                                onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                                className="focus:outline-none"
+                              >
+                                <Star className={cn("w-6 h-6", reviewForm.rating >= star ? "fill-black text-black" : "text-neutral-300")} />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Your Review</label>
+                        <textarea 
+                          required
+                          placeholder="Share your experience with this fragrance..."
+                          className="w-full bg-white border border-neutral-200 p-4 text-sm focus:outline-none focus:border-black transition-colors min-h-[120px]"
+                          value={reviewForm.comment}
+                          onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                        />
+                      </div>
+                      <Button type="submit" disabled={isReviewLoading} className="w-full h-14 text-[10px] uppercase tracking-widest font-bold">
+                        {isReviewLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
+                            <>
+                                <Send className="w-4 h-4 mr-2" />
+                                Submit Anonymous Review
+                            </>
+                        )}
+                      </Button>
+                    </form>
+                  </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div className="space-y-10">
+              {reviews.length === 0 ? (
+                <div className="py-12 border-t border-border flex flex-col items-center justify-center text-center">
+                  <MessageSquare className="w-8 h-8 text-neutral-200 mb-4" />
+                  <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">No reviews yet. Be the first to share your thoughts.</p>
+                </div>
+              ) : (
+                reviews.map((review) => (
+                  <div key={review.id} className="pt-10 border-t border-border first:border-0 first:pt-0">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h4 className="text-sm font-bold uppercase tracking-widest">{review.name}</h4>
+                        <p className="text-[10px] text-neutral-400 uppercase tracking-widest mt-1">
+                          {new Date(review.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        </p>
+                      </div>
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star key={s} className={cn("w-3 h-3 fill-current", review.rating >= s ? "text-black" : "text-neutral-200")} />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-neutral-600 text-sm italic leading-relaxed">"{review.comment}"</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {relatedProducts.length > 0 && (
         <section className="pt-24 border-t border-border">
           <h2 className="text-3xl font-serif mb-12">You May Also Like</h2>
@@ -205,7 +363,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
                 </a>
                 <div className="p-6 text-center">
                   <h3 className="text-lg font-serif mb-2">{p.name}</h3>
-                  <p className="text-sm font-medium">${p.price}.00</p>
+                  <p className="text-sm font-medium">PKR {p.price}.00</p>
                 </div>
               </motion.div>
             ))}
