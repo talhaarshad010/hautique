@@ -16,6 +16,8 @@ import { ref, onValue } from 'firebase/database';
 import { database } from '@/lib/firebase';
 import { Loader2 } from 'lucide-react';
 
+import { useRouter } from 'next/navigation';
+
 const StatCard = ({
   title,
   value,
@@ -38,7 +40,7 @@ const StatCard = ({
         'flex items-center text-xs font-bold',
         trend === 'up' ? 'text-green-600' : 'text-red-600'
       )}>
-        {trend === 'up' ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
+        Trend {trend === 'up' ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
         {trendValue}
       </div>
     </div>
@@ -50,6 +52,7 @@ const StatCard = ({
 );
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [ordersList, setOrdersList] = React.useState<any[]>([]);
   const [productsCount, setProductsCount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
@@ -107,7 +110,12 @@ export default function DashboardPage() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-serif">Recent Orders</h2>
-          <button className="text-xs uppercase tracking-widest font-bold hover:underline">View All</button>
+          <button 
+            onClick={() => router.push('/admin/orders')}
+            className="text-xs uppercase tracking-widest font-bold hover:underline"
+          >
+            View All
+          </button>
         </div>
         <div className="bg-white border border-border overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -134,8 +142,12 @@ export default function DashboardPage() {
                   </td>
                 </tr>
               ) : ordersList.slice(0, 5).reverse().map((order, idx) => (
-                <tr key={idx} className="border-b border-border hover:bg-neutral-50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-medium uppercase tracking-widest">{order.id}</td>
+                <tr 
+                  key={idx} 
+                  onClick={() => router.push(`/admin/orders/${order.id}`)}
+                  className="border-b border-border hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  <td className="px-6 py-4 text-sm font-medium uppercase tracking-widest text-black hover:underline">{order.id}</td>
                   <td className="px-6 py-4 text-sm">{order.customerName}</td>
                   <td className="px-6 py-4">
                     <span className={cn(

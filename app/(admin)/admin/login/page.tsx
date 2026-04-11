@@ -28,22 +28,13 @@ export default function AdminLoginPage() {
 
       let isAuthenticated = false;
 
-      if (!adminsData) {
-        // Fallback for first-time setup or if no admins exist in DB
-        if (email === 'admin@hautique.com' && password === 'admin123') {
-          isAuthenticated = true;
-        }
-      } else {
-        // Check against dynamic admins
+      if (adminsData) {
         const adminsList = Object.values(adminsData) as any[];
         const matchedAdmin = adminsList.find(
           (a) => a.email.toLowerCase() === email.toLowerCase() && a.password === password
         );
         
         if (matchedAdmin) {
-          isAuthenticated = true;
-        } else if (email === 'admin@hautique.com' && password === 'admin123') {
-          // Keep hardcoded fallback as safety
           isAuthenticated = true;
         }
       }
