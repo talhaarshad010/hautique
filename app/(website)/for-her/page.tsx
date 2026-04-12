@@ -71,22 +71,9 @@ export default function ForHerPage() {
       transition={{ duration: 0.8 }}
       className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
     >
-      <div className="flex flex-col md:flex-row items-center gap-12 mb-24 bg-neutral-50 p-8 md:p-16">
-        <div className="w-full md:w-1/2">
-          <span className="text-xs uppercase tracking-[0.3em] text-neutral-400 mb-4 block">Feminine Collection</span>
-          <h1 className="text-5xl md:text-7xl  mb-8 leading-tight">For Her</h1>
-          <p className="text-neutral-600 leading-relaxed mb-10">
-            A curated selection of floral, fruity, and elegant fragrances designed to celebrate femininity in all its forms. From delicate morning mists to bold evening statements.
-          </p>
-        </div>
-        <div className="w-full md:w-1/2 relative aspect-square overflow-hidden shadow-2xl">
-          <Image
-            src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800"
-            alt="For Her Collection"
-            fill
-            className="object-cover"
-          />
-        </div>
+      <div className="mb-16">
+        <h1 className="text-4xl md:text-6xl uppercase tracking-tighter font-bold mb-4">For Her</h1>
+        <p className="text-xs uppercase tracking-[0.4em] text-neutral-400">Feminine Collection</p>
       </div>
 
       {loading ? (

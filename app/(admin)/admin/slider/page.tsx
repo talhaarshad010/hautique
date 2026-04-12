@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Button, Input, Card, cn } from '@/components/ui';
-import { Plus, Edit2, Trash2, Image as ImageIcon, X, Loader2, Upload, Save } from 'lucide-react';
+import { Plus, Edit2, Trash2, Image as ImageIcon, X, Loader2, Upload, Save, Monitor, Tablet, Smartphone } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCloudinary } from '@/hooks/useCloudinary';
 import { ref, onValue, remove, set, push } from 'firebase/database';
@@ -10,7 +10,9 @@ import { database } from '@/lib/firebase';
 
 interface SliderItem {
   id: string;
-  image: string;
+  image: string; // Desktop/Default
+  imageTablet: string;
+  imageMobile: string;
   tag: string;
   title: string;
   order?: number;
@@ -18,6 +20,7 @@ interface SliderItem {
 
 export default function AdminSliderPage() {
   const { uploadFile, isUploading: storageLoading } = useCloudinary();
+  const [activeUploadField, setActiveUploadField] = React.useState<string | null>(null);
   
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [editingSlideId, setEditingSlideId] = React.useState<string | null>(null);
@@ -28,6 +31,8 @@ export default function AdminSliderPage() {
   // Form State
   const [formData, setFormData] = React.useState({
     image: '',
+    imageTablet: '',
+    imageMobile: '',
     tag: '',
     title: ''
   });
@@ -52,15 +57,18 @@ export default function AdminSliderPage() {
     return () => unsubscribe();
   }, []);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'imageTablet' | 'imageMobile') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setActiveUploadField(field);
     try {
       const url = await uploadFile(file);
-      setFormData(prev => ({ ...prev, image: url }));
+      setFormData(prev => ({ ...prev, [field]: url }));
     } catch (error) {
       console.error("Upload failed:", error);
+    } finally {
+      setActiveUploadField(null);
     }
   };
 
@@ -94,6 +102,8 @@ export default function AdminSliderPage() {
     setEditingSlideId(slide.id);
     setFormData({
       image: slide.image,
+      imageTablet: slide.imageTablet || '',
+      imageMobile: slide.imageMobile || '',
       tag: slide.tag,
       title: slide.title
     });
@@ -115,6 +125,8 @@ export default function AdminSliderPage() {
     setEditingSlideId(null);
     setFormData({
       image: '',
+      imageTablet: '',
+      imageMobile: '',
       tag: '',
       title: ''
     });
@@ -125,7 +137,7 @@ export default function AdminSliderPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
           <h1 className="text-4xl  tracking-tight uppercase mb-2">Hero Slider</h1>
-          <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Manage your homepage visuals and messaging.</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Manage your responsive homepage visuals.</p>
         </div>
         <Button 
           onClick={() => setIsModalOpen(true)}
@@ -176,6 +188,11 @@ export default function AdminSliderPage() {
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
+                  <div className="absolute bottom-3 left-3 flex gap-1">
+                    {slide.image && <Monitor className="w-3 h-3 text-white/50" />}
+                    {slide.imageTablet && <Tablet className="w-3 h-3 text-white/50" />}
+                    {slide.imageMobile && <Smartphone className="w-3 h-3 text-white/50" />}
+                  </div>
                 </div>
                 <div className="p-6 flex-grow bg-white">
                   <span className="text-[8px] uppercase tracking-[0.3em] text-neutral-400 mb-2 block font-bold">{slide.tag || 'NO TAGLINE'}</span>
@@ -202,14 +219,14 @@ export default function AdminSliderPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white p-10 shadow-2xl overflow-y-auto max-h-[90vh]"
+              className="relative w-full max-w-2xl bg-white p-10 shadow-2xl overflow-y-auto max-h-[90vh]"
             >
               <div className="flex justify-between items-start mb-10">
                 <div>
                   <h2 className="text-3xl  uppercase tracking-tight mb-2">
                     {editingSlideId ? 'Edit Slide' : 'Add New Slide'}
                   </h2>
-                  <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">Configure your hero masterpiece</p>
+                  <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">Configure your responsive hero masterpiece</p>
                 </div>
                 <button onClick={closeModal} className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
                   <X className="w-6 h-6" />
@@ -217,36 +234,104 @@ export default function AdminSliderPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="space-y-3">
-                  <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Hero Image</label>
-                  <div className="relative aspect-video bg-neutral-50 border-2 border-dashed border-neutral-200 flex items-center justify-center overflow-hidden group">
-                    {formData.image ? (
-                      <>
-                        <img 
-                          src={formData.image} 
-                          alt="Preview" 
-                          className="w-full h-full object-cover" 
-                        />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                          <label className="cursor-pointer p-2 bg-white rounded-full">
-                            <Upload className="w-4 h-4 ml-0" />
-                            <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
-                          </label>
-                        </div>
-                      </>
-                    ) : (
-                      <label className="cursor-pointer flex flex-col items-center gap-2">
-                        {storageLoading ? (
-                          <Loader2 className="w-6 h-6 animate-spin text-neutral-300" />
-                        ) : (
-                          <>
-                            <ImageIcon className="w-6 h-6 text-neutral-300" />
-                            <span className="text-[8px] uppercase tracking-widest text-neutral-400 font-bold">Pick Masterpiece</span>
-                          </>
-                        )}
-                        <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
-                      </label>
-                    )}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Desktop Upload */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 flex items-center justify-between">
+                      <span className="flex items-center gap-2"><Monitor className="w-3 h-3" /> Desktop</span>
+                      <span className="text-[8px] opacity-70">2560 x 1160 px</span>
+                    </label>
+                    <div className="relative aspect-video bg-neutral-50 border-2 border-dashed border-neutral-200 flex items-center justify-center overflow-hidden group">
+                      {formData.image ? (
+                        <>
+                          <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <label className="cursor-pointer p-2 bg-white rounded-full">
+                              <Upload className="w-4 h-4 ml-0" />
+                              <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'image')} />
+                            </label>
+                          </div>
+                        </>
+                      ) : (
+                        <label className="cursor-pointer flex flex-col items-center gap-2">
+                          {storageLoading && activeUploadField === 'image' ? (
+                            <Loader2 className="w-6 h-6 animate-spin text-neutral-300" />
+                          ) : (
+                            <>
+                              <ImageIcon className="w-6 h-6 text-neutral-300" />
+                              <span className="text-[8px] uppercase tracking-widest text-neutral-400 font-bold text-center">Standard<br/>Desktop</span>
+                            </>
+                          )}
+                          <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'image')} />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Tablet Upload */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 flex items-center justify-between">
+                      <span className="flex items-center gap-2"><Tablet className="w-3 h-3" /> Tablet</span>
+                      <span className="text-[8px] opacity-70">1800 x 1200 px</span>
+                    </label>
+                    <div className="relative aspect-video bg-neutral-50 border-2 border-dashed border-neutral-200 flex items-center justify-center overflow-hidden group">
+                      {formData.imageTablet ? (
+                        <>
+                          <img src={formData.imageTablet} alt="Preview" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <label className="cursor-pointer p-2 bg-white rounded-full">
+                              <Upload className="w-4 h-4 ml-0" />
+                              <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'imageTablet')} />
+                            </label>
+                          </div>
+                        </>
+                      ) : (
+                        <label className="cursor-pointer flex flex-col items-center gap-2">
+                          {storageLoading && activeUploadField === 'imageTablet' ? (
+                            <Loader2 className="w-6 h-6 animate-spin text-neutral-300" />
+                          ) : (
+                            <>
+                              <ImageIcon className="w-6 h-6 text-neutral-300" />
+                              <span className="text-[8px] uppercase tracking-widest text-neutral-400 font-bold text-center">Portrait<br/>Tablet</span>
+                            </>
+                          )}
+                          <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'imageTablet')} />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Mobile Upload */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 flex items-center justify-between">
+                      <span className="flex items-center gap-2"><Smartphone className="w-3 h-3" /> Mobile</span>
+                      <span className="text-[8px] opacity-70">1080 x 1350 px</span>
+                    </label>
+                    <div className="relative aspect-video bg-neutral-50 border-2 border-dashed border-neutral-200 flex items-center justify-center overflow-hidden group">
+                      {formData.imageMobile ? (
+                        <>
+                          <img src={formData.imageMobile} alt="Preview" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <label className="cursor-pointer p-2 bg-white rounded-full">
+                              <Upload className="w-4 h-4 ml-0" />
+                              <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'imageMobile')} />
+                            </label>
+                          </div>
+                        </>
+                      ) : (
+                        <label className="cursor-pointer flex flex-col items-center gap-2">
+                          {storageLoading && activeUploadField === 'imageMobile' ? (
+                            <Loader2 className="w-6 h-6 animate-spin text-neutral-300" />
+                          ) : (
+                            <>
+                              <ImageIcon className="w-6 h-6 text-neutral-300" />
+                              <span className="text-[8px] uppercase tracking-widest text-neutral-400 font-bold text-center">Smartphone<br/>Portrait</span>
+                            </>
+                          )}
+                          <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'imageMobile')} />
+                        </label>
+                      )}
+                    </div>
                   </div>
                 </div>
 

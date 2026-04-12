@@ -1,26 +1,40 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ShoppingBag, Menu, X, User, Search, Truck } from 'lucide-react';
-import { Button, cn } from '@/components/ui';
-import { motion, AnimatePresence } from 'motion/react';
+import * as React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ShoppingBag, Menu, X, User, Search, Truck } from "lucide-react";
+import { Button, cn } from "@/components/ui";
+import { motion, AnimatePresence } from "motion/react";
 
-import { useCart } from '@/context/CartContext';
+import { useCart } from "@/context/CartContext";
 
-const Navbar = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
+const navLinks = [
+  { name: "Home", href: "/" },
+  { name: "Shop", href: "/shop" },
+  { name: "Testers", href: "/testers" },
+  { name: "For Her", href: "/for-her" },
+  { name: "For Him", href: "/for-him" },
+  { name: "Deals", href: "/deals" },
+];
+
+const Navbar = ({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}) => {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = React.useState("");
   const [scrolled, setScrolled] = React.useState(false);
   const pathname = usePathname();
   const { cartCount } = useCart();
 
   React.useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -28,26 +42,17 @@ const Navbar = () => {
     if (searchTerm.trim()) {
       window.location.href = `/shop?search=${encodeURIComponent(searchTerm)}`;
       setIsSearchOpen(false);
-      setSearchTerm('');
+      setSearchTerm("");
     }
   };
-
-  const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Shop', href: '/shop' },
-    { name: 'Testers', href: '/testers' },
-    { name: 'For Her', href: '/for-her' },
-    { name: 'For Him', href: '/for-him' },
-    { name: 'Deals', href: '/deals' },
-  ];
 
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 md:px-12 py-6 md:py-8 flex items-center justify-between',
-        scrolled 
-          ? 'bg-white/95 backdrop-blur-lg border-b border-border py-4 md:py-5' 
-          : 'bg-white/40 backdrop-blur-md md:bg-transparent md:backdrop-blur-none'
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 md:px-12 py-6 md:py-8 flex items-center justify-between",
+        scrolled
+          ? "bg-white/95 backdrop-blur-lg border-b border-border py-4 md:py-5"
+          : "bg-white/40 backdrop-blur-md md:bg-transparent md:backdrop-blur-none",
       )}
     >
       <div className="flex items-center gap-8">
@@ -65,8 +70,8 @@ const Navbar = () => {
             key={link.name}
             href={link.href}
             className={cn(
-              'text-sm uppercase tracking-widest hover:text-neutral-500 transition-colors',
-              pathname === link.href ? 'font-bold border-b border-black' : ''
+              "text-sm uppercase tracking-widest hover:text-neutral-500 transition-colors",
+              pathname === link.href ? "font-bold border-b border-black" : "",
             )}
           >
             {link.name}
@@ -96,24 +101,29 @@ const Navbar = () => {
               </motion.form>
             )}
           </AnimatePresence>
-          <button 
+          <button
             onClick={() => setIsSearchOpen(!isSearchOpen)}
             className="hover:opacity-70 transition-opacity"
           >
-            {isSearchOpen ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
+            {isSearchOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Search className="w-5 h-5" />
+            )}
           </button>
         </div>
-        <Link href="/track-order" className="hover:opacity-70 transition-opacity" title="Track Order">
+        <Link
+          href="/track-order"
+          className="hover:opacity-70 transition-opacity"
+          title="Track Order"
+        >
           <Truck className="w-5 h-5" />
         </Link>
-        <button className="hover:opacity-70">
-          <User className="w-5 h-5" />
-        </button>
         <Link href="/cart" className="relative hover:opacity-70 group">
           <ShoppingBag className="w-5 h-5 transition-transform group-hover:-translate-y-1" />
           <AnimatePresence>
             {cartCount > 0 && (
-              <motion.span 
+              <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0 }}
@@ -125,8 +135,129 @@ const Navbar = () => {
           </AnimatePresence>
         </Link>
       </div>
+    </nav>
+  );
+};
 
-      {/* Mobile Drawer */}
+const Footer = () => (
+  <footer className="bg-black text-white px-6 md:px-12 py-16">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+      <div className="md:col-span-1">
+        <h3 className="text-2xl  font-bold mb-6">HAUTIQUE</h3>
+        <p className="text-neutral-400 text-sm leading-relaxed">
+          Crafting timeless scents for the modern individual. Experience the art
+          of luxury perfumery.
+        </p>
+      </div>
+      <div>
+        <h4 className="text-sm uppercase tracking-widest font-bold mb-6">
+          Shop
+        </h4>
+        <ul className="flex flex-col gap-4 text-neutral-400 text-sm">
+          <li>
+            <Link
+              href="/for-her"
+              className="hover:text-white transition-colors"
+            >
+              For Her
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/for-him"
+              className="hover:text-white transition-colors"
+            >
+              For Him
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/testers"
+              className="hover:text-white transition-colors"
+            >
+              Testers
+            </Link>
+          </li>
+          <li>
+            <Link href="/shop" className="hover:text-white transition-colors">
+              All Products
+            </Link>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 className="text-sm uppercase tracking-widest font-bold mb-6">
+          Support
+        </h4>
+        <ul className="flex flex-col gap-4 text-neutral-400 text-sm">
+          <li>
+            <Link
+              href="/track-order"
+              className="text-white hover:text-white font-bold transition-colors"
+            >
+              Track Order
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/shipping-policy"
+              className="hover:text-white transition-colors"
+            >
+              Shipping Policy
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/returns-exchanges"
+              className="hover:text-white transition-colors"
+            >
+              Returns & Exchanges
+            </Link>
+          </li>
+          <li>
+            <Link href="/faqs" className="hover:text-white transition-colors">
+              FAQs
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/contact-us"
+              className="hover:text-white transition-colors"
+            >
+              Contact Us
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div className="pt-8 border-t border-neutral-800 flex flex-col md:row justify-between items-center gap-4 text-[10px] uppercase tracking-widest text-neutral-500">
+      <p>© 2024 HAUTIQUE. ALL RIGHTS RESERVED.</p>
+      <div className="flex gap-6">
+        <Link href="#" className="hover:text-white">
+          Privacy Policy
+        </Link>
+        <Link href="#" className="hover:text-white">
+          Terms of Service
+        </Link>
+      </div>
+    </div>
+  </footer>
+);
+
+export default function WebsiteLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <main className="flex-grow">{children}</main>
+      <Footer />
+
+      {/* Mobile Drawer - Lifted to Root level for highest stacking perspective */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -135,14 +266,14 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/50 z-[60]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-[90]"
             />
             <motion.div
-              initial={{ x: '-100%' }}
+              initial={{ x: "-100%" }}
               animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 bottom-0 w-[80%] max-w-sm bg-white z-[70] p-8 flex flex-col"
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 left-0 bottom-0 w-[85%] max-w-sm bg-white shadow-[20px_0_60px_-15px_rgba(0,0,0,0.3)] z-[100] p-8 flex flex-col"
             >
               <div className="flex justify-between items-center mb-12">
                 <span className="text-xl  font-bold">HAUTIQUE</span>
@@ -176,55 +307,6 @@ const Navbar = () => {
           </>
         )}
       </AnimatePresence>
-    </nav>
-  );
-};
-
-const Footer = () => (
-  <footer className="bg-black text-white px-6 md:px-12 py-16">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-      <div className="md:col-span-1">
-        <h3 className="text-2xl  font-bold mb-6">HAUTIQUE</h3>
-        <p className="text-neutral-400 text-sm leading-relaxed">
-          Crafting timeless scents for the modern individual. Experience the art of luxury perfumery.
-        </p>
-      </div>
-      <div>
-        <h4 className="text-sm uppercase tracking-widest font-bold mb-6">Shop</h4>
-        <ul className="flex flex-col gap-4 text-neutral-400 text-sm">
-          <li><Link href="/for-her" className="hover:text-white transition-colors">For Her</Link></li>
-          <li><Link href="/for-him" className="hover:text-white transition-colors">For Him</Link></li>
-          <li><Link href="/testers" className="hover:text-white transition-colors">Testers</Link></li>
-          <li><Link href="/shop" className="hover:text-white transition-colors">All Products</Link></li>
-        </ul>
-      </div>
-      <div>
-        <h4 className="text-sm uppercase tracking-widest font-bold mb-6">Support</h4>
-        <ul className="flex flex-col gap-4 text-neutral-400 text-sm">
-          <li><Link href="/track-order" className="text-white hover:text-white font-bold transition-colors">Track Order</Link></li>
-          <li><Link href="/shipping-policy" className="hover:text-white transition-colors">Shipping Policy</Link></li>
-          <li><Link href="/returns-exchanges" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
-          <li><Link href="/faqs" className="hover:text-white transition-colors">FAQs</Link></li>
-          <li><Link href="/contact-us" className="hover:text-white transition-colors">Contact Us</Link></li>
-        </ul>
-      </div>
-    </div>
-    <div className="pt-8 border-t border-neutral-800 flex flex-col md:row justify-between items-center gap-4 text-[10px] uppercase tracking-widest text-neutral-500">
-      <p>© 2024 HAUTIQUE. ALL RIGHTS RESERVED.</p>
-      <div className="flex gap-6">
-        <Link href="#" className="hover:text-white">Privacy Policy</Link>
-        <Link href="#" className="hover:text-white">Terms of Service</Link>
-      </div>
-    </div>
-  </footer>
-);
-
-export default function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow">{children}</main>
-      <Footer />
     </div>
   );
 }

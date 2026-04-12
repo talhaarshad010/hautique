@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { type Product } from '@/lib/mock-data';
-import { Button, cn } from '@/components/ui';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'motion/react';
-import { ShoppingCart, Loader2 } from 'lucide-react';
-import { ref, onValue } from 'firebase/database';
-import { database } from '@/lib/firebase';
+import * as React from "react";
+import { type Product } from "@/lib/mock-data";
+import { Button, cn } from "@/components/ui";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "motion/react";
+import { ShoppingCart, Loader2 } from "lucide-react";
+import { ref, onValue } from "firebase/database";
+import { database } from "@/lib/firebase";
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (
@@ -19,22 +19,34 @@ const ProductCard = ({ product }: { product: Product }) => {
       whileHover={{ y: -10 }}
       className="group relative flex flex-col bg-white border border-neutral-100 overflow-hidden"
     >
-      <Link href={`/product/${product.id}`} className="relative aspect-[4/5] overflow-hidden">
+      <Link
+        href={`/product/${product.id}`}
+        className="relative aspect-[4/5] overflow-hidden"
+      >
         <Image
           src={product.image}
           alt={product.name}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
       </Link>
       <div className="p-8 flex flex-col items-center text-center">
-        <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2 font-bold">Category</span>
-        <h3 className="text-xl  mb-2 group-hover:underline underline-offset-8 transition-all">{product.name}</h3>
-        <p className="text-sm  tracking-widest mb-8 text-neutral-500">PKR {product.price}.00</p>
-        <Button variant="outline" size="sm" className="w-full rounded-none border-neutral-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all text-[10px] uppercase tracking-widest h-12 font-bold">
+        <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2 font-bold">
+          Category
+        </span>
+        <h3 className="text-xl  mb-2 group-hover:underline underline-offset-8 transition-all">
+          {product.name}
+        </h3>
+        <p className="text-sm  tracking-widest mb-8 text-neutral-500">
+          PKR {product.price}.00
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full rounded-none border-neutral-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all text-[10px] uppercase tracking-widest h-12 font-bold"
+        >
           <ShoppingCart className="w-4 h-4 mr-2" />
           Add to Cart
         </Button>
@@ -48,15 +60,23 @@ export default function ForHimPage() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const productsRef = ref(database, 'products');
+    const productsRef = ref(database, "products");
     const unsubscribe = onValue(productsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const formattedProducts = Object.entries(data).map(([id, product]: [string, any]) => ({
-          id,
-          ...product
-        })).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-        setProductsList(formattedProducts.filter(p => p.category === 'For Him'));
+        const formattedProducts = Object.entries(data)
+          .map(([id, product]: [string, any]) => ({
+            id,
+            ...product,
+          }))
+          .sort(
+            (a, b) =>
+              new Date(b.createdAt || 0).getTime() -
+              new Date(a.createdAt || 0).getTime(),
+          );
+        setProductsList(
+          formattedProducts.filter((p) => p.category === "For Him"),
+        );
       }
       setLoading(false);
     });
@@ -71,22 +91,13 @@ export default function ForHimPage() {
       transition={{ duration: 0.8 }}
       className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
     >
-      <div className="flex flex-col md:flex-row items-center gap-12 mb-24 bg-neutral-900 text-white p-8 md:p-16">
-        <div className="w-full md:w-1/2">
-          <span className="text-xs uppercase tracking-[0.3em] text-neutral-500 mb-4 block">Masculine Collection</span>
-          <h1 className="text-5xl md:text-7xl  mb-8 leading-tight">For Him</h1>
-          <p className="text-neutral-400 leading-relaxed mb-10">
-            A bold selection of woody, spicy, and fresh fragrances designed for the modern man. From classic sophisticated scents to adventurous contemporary blends.
-          </p>
-        </div>
-        <div className="w-full md:w-1/2 relative aspect-square overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl">
-          <Image
-            src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=800"
-            alt="For Him Collection"
-            fill
-            className="object-cover"
-          />
-        </div>
+      <div className="mb-16">
+        <h1 className="text-4xl md:text-6xl uppercase tracking-tighter font-bold mb-4">
+          For Him
+        </h1>
+        <p className="text-xs uppercase tracking-[0.4em] text-neutral-400">
+          Masculine Collection
+        </p>
       </div>
 
       {loading ? (
@@ -95,7 +106,9 @@ export default function ForHimPage() {
         </div>
       ) : productsList.length === 0 ? (
         <div className="text-center py-20">
-          <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">No fragrances in this collection yet.</p>
+          <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">
+            No fragrances in this collection yet.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
