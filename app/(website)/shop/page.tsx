@@ -33,7 +33,7 @@ const ProductCard = ({ product, addToCart }: { product: Product; addToCart: (pro
         <img
           src={product.image.includes('/upload/') ? product.image.replace('/upload/', '/upload/f_auto,q_auto/') : product.image}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
         />
       </Link>
       <div className="p-8 flex flex-col items-center text-center">

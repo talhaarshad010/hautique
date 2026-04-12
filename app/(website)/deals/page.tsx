@@ -89,7 +89,7 @@ export default function DealsPage() {
                   <img
                     src={deal.image.includes('/upload/') ? deal.image.replace('/upload/', '/upload/f_auto,q_auto/') : deal.image}
                     alt={deal.name}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+                    className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-1000 scale-100 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-700" />
                 </div>
@@ -114,7 +114,7 @@ export default function DealsPage() {
                     {deal.price && (
                       <div className="pt-4 pb-2 border-b border-neutral-100">
                         <p className="text-[10px] uppercase tracking-widest text-neutral-400 mb-1 font-bold">Featured Price</p>
-                        <p className="text-3xl ">${deal.price}.00</p>
+                        <p className="text-3xl ">PKR {deal.price}.00</p>
                       </div>
                     )}
 

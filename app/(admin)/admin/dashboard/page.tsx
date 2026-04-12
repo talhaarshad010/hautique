@@ -4,10 +4,11 @@ import * as React from 'react';
 import { Card, cn } from '@/components/ui';
 import { orders, products } from '@/lib/mock-data';
 import {
+  DollarSign,
   TrendingUp,
   ShoppingBag,
   Users,
-  DollarSign,
+  Banknote,
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react';
@@ -87,7 +88,7 @@ export default function DashboardPage() {
   const deliveredOrders = ordersList.filter(o => o.status === 'Delivered').length;
 
   const stats: { title: string; value: string; icon: any; trend: 'up' | 'down'; trendValue: string }[] = [
-    { title: 'Total Revenue', value: `PKR ${totalRevenue.toLocaleString()}`, icon: DollarSign, trend: 'up', trendValue: '+12%' },
+    { title: 'Total Revenue', value: `PKR ${totalRevenue.toLocaleString()}`, icon: Banknote, trend: 'up', trendValue: '+12%' },
     { title: 'Total Orders', value: ordersList.length.toString(), icon: ShoppingBag, trend: 'up', trendValue: '+8%' },
     { title: 'Total Products', value: productsCount.toString(), icon: TrendingUp, trend: 'up', trendValue: '+2%' },
     { title: 'Delivered', value: deliveredOrders.toString(), icon: Users, trend: 'up', trendValue: '+5%' },

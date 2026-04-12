@@ -110,14 +110,16 @@ export default function DealDetailPage() {
   return (
     <div className="bg-white min-h-screen">
       {/* Dynamic Hero Section */}
-      <section className="relative h-[70vh] w-full overflow-hidden flex items-center justify-center pt-20">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src={deal.image.includes('/upload/') ? deal.image.replace('/upload/', '/upload/f_auto,q_auto/') : deal.image} 
-            alt={deal.name}
-            className="w-full h-full object-cover grayscale brightness-[0.7] transform scale-105"
-          />
-          <div className="absolute inset-0 bg-black/20" />
+      <section className="relative h-[45vh] sm:h-[55vh] md:h-[70vh] w-full bg-white overflow-hidden">
+        <div className="absolute inset-0 pt-24 md:pt-0 z-0 flex items-center justify-center">
+          <div className="relative w-full h-full">
+            <img 
+              src={deal.image.includes('/upload/') ? deal.image.replace('/upload/', '/upload/f_auto,q_auto/') : deal.image} 
+              alt={deal.name}
+              className="w-full h-full object-contain md:object-cover grayscale brightness-[0.8] md:brightness-[0.7]"
+            />
+            <div className="absolute inset-0 bg-black/20 md:bg-black/20" />
+          </div>
         </div>
         
         <div className="relative z-10 text-center text-white px-6 max-w-4xl">
@@ -155,7 +157,7 @@ export default function DealDetailPage() {
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-8">
            <div>
              <p className="text-[10px] uppercase tracking-[0.5em] text-neutral-400 mb-2 font-bold">Campaign Rate</p>
-             <p className="text-5xl  leading-none italic">${deal.price || 0}.00</p>
+             <p className="text-5xl  leading-none italic">PKR {deal.price || 0}.00</p>
            </div>
            
            <Button 
@@ -246,7 +248,7 @@ export default function DealDetailPage() {
                         {product.name}
                       </h3>
                     </Link>
-                    <p className="text-lg  italic text-neutral-400">${product.price}.00 (Ref)</p>
+                    <p className="text-lg  italic text-neutral-400">PKR {product.price}.00 (Ref)</p>
                   </div>
                 </div>
               </motion.div>

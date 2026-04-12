@@ -16,7 +16,7 @@ import {
 import { 
   TrendingUp, 
   ShoppingBag, 
-  DollarSign, 
+  Banknote, 
   Download,
   Package,
   Star,
@@ -99,7 +99,7 @@ export default function AnalyticsPage() {
         <StatCard 
           title="Total Revenue" 
           value={`PKR ${data.totalRevenue.toLocaleString()}`}
-          icon={DollarSign}
+          icon={Banknote}
         />
         <StatCard 
           title="Total Orders" 

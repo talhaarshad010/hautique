@@ -109,7 +109,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
             <img
               src={selectedImage.includes('/upload/') ? selectedImage.replace('/upload/', '/upload/f_auto,q_auto/') : selectedImage}
               alt={product.name}
-              className="w-full h-full object-cover transition-all duration-500"
+              className="w-full h-full object-contain transition-all duration-500"
             />
             {product.isNew && <Badge className="absolute top-6 left-6">New Arrival</Badge>}
           </motion.div>
@@ -125,7 +125,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
                 <img
                   src={imgUrl.includes('/upload/') ? imgUrl.replace('/upload/', '/upload/f_auto,q_auto/') : imgUrl}
                   alt={`Thumbnail ${i}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
             ))}

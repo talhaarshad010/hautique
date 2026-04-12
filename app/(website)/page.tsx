@@ -40,7 +40,7 @@ const Hero = ({ dynamicSlides }: { dynamicSlides?: any[] }) => {
   }, [slides.length]);
 
   return (
-    <section className="relative h-[70vh] md:h-[90vh] w-full overflow-hidden bg-neutral-100">
+    <section className="relative h-[50vh] sm:h-[65vh] md:h-[90vh] w-full bg-white overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
@@ -48,16 +48,17 @@ const Hero = ({ dynamicSlides }: { dynamicSlides?: any[] }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
-          className="absolute inset-0"
+          className="absolute inset-0 flex items-center justify-center pt-24 md:pt-0"
         >
-          <Image
-            src={slides[currentSlide].image}
-            alt="Luxury Perfume"
-            fill
-            className="object-cover brightness-75 transition-transform duration-[10000ms] scale-110"
-            priority
-          />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 text-white bg-black/20">
+          <div className="relative w-full h-full">
+            <Image
+              src={slides[currentSlide].image}
+              alt="Luxury Perfume"
+              fill
+              className="object-contain md:object-cover brightness-90 md:brightness-75"
+              priority
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 text-white bg-black/20 md:bg-black/30">
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -75,8 +76,9 @@ const Hero = ({ dynamicSlides }: { dynamicSlides?: any[] }) => {
               {slides[currentSlide].title}
             </motion.h1>
           </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </motion.div>
+    </AnimatePresence>
 
       {/* Slider Indicators */}
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4 z-10">
@@ -109,7 +111,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           src={product.image}
           alt={product.name}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          className="object-contain transition-transform duration-700 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           
         />

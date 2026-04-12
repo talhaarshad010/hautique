@@ -33,7 +33,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       </Link>
       <div className="p-8 flex flex-col items-center text-center">
         <h3 className="text-lg  mb-2 group-hover:underline underline-offset-4">{product.name}</h3>
-        <p className="text-xs  tracking-widest mb-6 text-neutral-500">${product.price}.00</p>
+        <p className="text-xs  tracking-widest mb-6 text-neutral-500">PKR {product.price}.00</p>
         <Button variant="outline" size="sm" className="w-full rounded-none border-neutral-200 group-hover:bg-black group-hover:text-white transition-all text-[10px] uppercase tracking-widest h-10">
           Add to Cart
         </Button>

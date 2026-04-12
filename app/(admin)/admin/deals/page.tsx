@@ -275,7 +275,7 @@ export default function DealsPage() {
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex flex-col">
-                        <span className="text-lg ">${deal.price || 0}.00</span>
+                        <span className="text-lg ">PKR {deal.price || 0}.00</span>
                       </div>
                     </td>
                     <td className="px-8 py-6">
@@ -370,7 +370,7 @@ export default function DealsPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Deal Price ($)</label>
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Deal Price (PKR)</label>
                   <Input 
                     type="number" 
                     placeholder="99" 
@@ -499,8 +499,8 @@ export default function DealsPage() {
                               />
                             </div>
                             <div className="flex-grow min-w-0">
-                              <p className="text-[11px] font-bold uppercase tracking-widest truncate">{product.name}</p>
-                              <p className="text-[9px] uppercase tracking-widest text-neutral-400">{product.category} • ${product.price}</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest truncate">{product.name}</p>
+                              <p className="text-[9px] uppercase tracking-widest text-neutral-400">{product.category} • PKR {product.price}</p>
                             </div>
                             <div className={cn(
                               "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all",
