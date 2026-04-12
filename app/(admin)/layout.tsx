@@ -3,6 +3,8 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import logo from '@/app/assets/images/logo.png';
 import {
   LayoutDashboard,
   Package,
@@ -152,8 +154,8 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }: { isOpen: boolean; setIsOpen: 
         )}
       >
         <div className="p-8 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-sans font-bold tracking-tighter">
-            HAUTIQUE
+          <Link href="/" className="flex items-center">
+            <Image src={logo} alt="HAUTIQUE" className="h-14 w-auto object-contain" />
           </Link>
           <button className="lg:hidden" onClick={() => setIsOpen(false)}>
             <X className="w-6 h-6" />

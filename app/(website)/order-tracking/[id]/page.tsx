@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import logo from "@/app/assets/images/logo.png";
 import { Card, Button } from "@/components/ui";
 import { products } from "@/lib/mock-data";
 import {
@@ -319,9 +321,9 @@ export default function OrderTrackingPage() {
           </section>
 
           {/* Branding Note */}
-          <div className="pt-12 text-center opacity-20 hover:opacity-50 transition-opacity">
-            <h3 className="text-2xl  tracking-widest">HAUTIQUE</h3>
-            <p className="text-[8px] uppercase tracking-[0.5em] mt-2">
+          <div className="pt-12 text-center opacity-20 hover:opacity-100 transition-opacity">
+            <Image src={logo} alt="HAUTIQUE" className="h-14 w-auto mx-auto object-contain invert" />
+            <p className="text-[8px] uppercase tracking-[0.5em] mt-3">
               The Art of Scent
             </p>
           </div>

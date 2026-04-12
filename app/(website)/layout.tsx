@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { ShoppingBag, Menu, X, User, Search, Truck } from "lucide-react";
 import { Button, cn } from "@/components/ui";
 import { motion, AnimatePresence } from "motion/react";
+import Image from "next/image";
+import logo from "@/app/assets/images/logo.png";
 
 import { useCart } from "@/context/CartContext";
 
@@ -59,8 +61,12 @@ const Navbar = ({
         <button className="lg:hidden" onClick={() => setIsOpen(true)}>
           <Menu className="w-6 h-6" />
         </button>
-        <Link href="/" className="text-2xl  tracking-tighter font-bold">
-          HAUTIQUE
+        <Link href="/" className="flex items-center">
+          <Image
+            src={logo}
+            alt="HAUTIQUE"
+            className="h-20 md:h-26 w-auto object-contain invert"
+          />
         </Link>
       </div>
 
@@ -143,7 +149,11 @@ const Footer = () => (
   <footer className="bg-black text-white px-6 md:px-12 py-16">
     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
       <div className="md:col-span-1">
-        <h3 className="text-2xl  font-bold mb-6">HAUTIQUE</h3>
+        <Image
+          src={logo}
+          alt="HAUTIQUE"
+          className="h-16 w-auto object-contain mb-6"
+        />
         <p className="text-neutral-400 text-sm leading-relaxed">
           Crafting timeless scents for the modern individual. Experience the art
           of luxury perfumery.
@@ -276,7 +286,11 @@ export default function WebsiteLayout({
               className="fixed top-0 left-0 bottom-0 w-[85%] max-w-sm bg-white shadow-[20px_0_60px_-15px_rgba(0,0,0,0.3)] z-[100] p-8 flex flex-col"
             >
               <div className="flex justify-between items-center mb-12">
-                <span className="text-xl  font-bold">HAUTIQUE</span>
+                <Image
+                  src={logo}
+                  alt="HAUTIQUE"
+                  className="h-12 w-auto object-contain invert"
+                />
                 <button onClick={() => setIsOpen(false)}>
                   <X className="w-6 h-6" />
                 </button>

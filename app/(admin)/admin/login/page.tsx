@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import logo from '@/app/assets/images/logo.png';
 import { Button, Input, Card } from '@/components/ui';
 import { motion } from 'motion/react';
 import { Lock, Loader2 } from 'lucide-react';
@@ -62,7 +64,7 @@ export default function AdminLoginPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-12">
-          <h1 className="text-4xl  font-bold tracking-tighter mb-2">HAUTIQUE</h1>
+          <Image src={logo} alt="HAUTIQUE" className="h-24 w-auto mx-auto object-contain mb-4 invert" />
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">Admin Portal</p>
         </div>
 
