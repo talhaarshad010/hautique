@@ -17,7 +17,8 @@ import {
   X,
   Bell,
   Search,
-  User
+  User,
+  Mail
 } from 'lucide-react';
 import { cn } from '@/components/ui';
 import { motion, AnimatePresence } from 'motion/react';
@@ -125,6 +126,7 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }: { isOpen: boolean; setIsOpen: 
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: Package },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingBag },
+    { name: 'Messages', href: '/admin/messages', icon: Mail },
     { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     { name: 'Deals', href: '/admin/deals', icon: Tag },
     { name: 'Hero Slider', href: '/admin/slider', icon: LayoutDashboard },

@@ -9,6 +9,8 @@ import { type Product } from "@/lib/mock-data";
 import { ArrowRight, ShoppingCart, Loader2 } from "lucide-react";
 import { ref, onValue } from "firebase/database";
 import { database } from "@/lib/firebase";
+import { useCart } from "@/context/CartContext";
+import { Check } from "lucide-react";
 
 const Hero = ({ dynamicSlides }: { dynamicSlides?: any[] }) => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
@@ -122,6 +124,16 @@ const Hero = ({ dynamicSlides }: { dynamicSlides?: any[] }) => {
 };
 
 const ProductCard = ({ product }: { product: Product }) => {
+  const { addToCart } = useCart();
+  const [adding, setAdding] = React.useState(false);
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setAdding(true);
+    addToCart(product, 1);
+    setTimeout(() => setAdding(false), 2000);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -161,12 +173,25 @@ const ProductCard = ({ product }: { product: Product }) => {
           PKR {product.price}.00
         </p>
         <Button
-          variant="outline"
+          onClick={handleAdd}
+          variant={adding ? "default" : "outline"}
           size="sm"
-          className="w-full rounded-none border-neutral-200 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all text-[10px] uppercase tracking-widest h-12 font-bold"
+          className={cn(
+            "w-full rounded-none border-neutral-200 transition-all text-[10px] uppercase tracking-widest h-12 font-bold",
+            adding ? "bg-green-600 border-green-600 text-white" : "group-hover:bg-black group-hover:text-white group-hover:border-black"
+          )}
         >
-          <ShoppingCart className="w-4 h-4 mr-2" />
-          Add to Cart
+          {adding ? (
+            <>
+              <Check className="w-4 h-4 mr-2" />
+              Added
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Add to Cart
+            </>
+          )}
         </Button>
       </div>
     </motion.div>

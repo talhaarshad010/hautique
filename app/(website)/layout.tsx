@@ -238,13 +238,13 @@ const Footer = () => (
         </ul>
       </div>
     </div>
-    <div className="pt-8 border-t border-neutral-800 flex flex-col md:row justify-between items-center gap-4 text-[10px] uppercase tracking-widest text-neutral-500">
+    <div className="pt-8 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest text-neutral-500">
       <p>© 2024 HAUTIQUE. ALL RIGHTS RESERVED.</p>
       <div className="flex gap-6">
-        <Link href="#" className="hover:text-white">
+        <Link href="/privacy-policy" className="hover:text-white transition-colors">
           Privacy Policy
         </Link>
-        <Link href="#" className="hover:text-white">
+        <Link href="/terms-of-service" className="hover:text-white transition-colors">
           Terms of Service
         </Link>
       </div>

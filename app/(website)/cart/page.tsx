@@ -85,7 +85,7 @@ export default function CartPage() {
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
-                <div className="flex justify-between items-end">
+                <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
                   <div className="flex items-center border border-border">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1, item.selectedSize)}
@@ -101,7 +101,7 @@ export default function CartPage() {
                       <Plus className="w-3 h-3" />
                     </button>
                   </div>
-                  <p className="font-medium">PKR {item.price * item.quantity}.00</p>
+                  <p className="font-medium whitespace-nowrap">PKR {item.price * item.quantity}.00</p>
                 </div>
               </div>
             </div>
