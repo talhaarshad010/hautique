@@ -51,10 +51,8 @@ const Navbar = ({
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 md:px-12 py-6 md:py-8 flex items-center justify-between",
-        scrolled
-          ? "bg-white/95 backdrop-blur-lg border-b border-border py-4 md:py-5"
-          : "bg-white/40 backdrop-blur-md md:bg-transparent md:backdrop-blur-none",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 sm:px-6 md:px-12 py-2.5 md:py-3 flex items-center justify-between bg-white border-b border-neutral-200",
+        scrolled && "shadow-sm",
       )}
     >
       <div className="flex items-center gap-8">
@@ -65,7 +63,7 @@ const Navbar = ({
           <Image
             src={logo}
             alt="HAUTIQUE"
-            className="h-20 md:h-26 w-auto object-contain invert"
+            className="h-10 md:h-12 w-auto object-contain invert"
           />
         </Link>
       </div>
@@ -264,7 +262,7 @@ export default function WebsiteLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar isOpen={isOpen} setIsOpen={setIsOpen} />
-      <main className="flex-grow">{children}</main>
+      <main className="flex-grow pt-[60px] md:pt-[64px]">{children}</main>
       <Footer />
 
       {/* Mobile Drawer - Lifted to Root level for highest stacking perspective */}
