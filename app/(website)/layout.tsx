@@ -63,7 +63,7 @@ const Navbar = ({
           <Image
             src={logo}
             alt="HAUTIQUE"
-            className="h-10 md:h-12 w-auto object-contain invert"
+            className="h-12 md:h-18 w-auto object-contain invert"
           />
         </Link>
       </div>
@@ -262,10 +262,9 @@ export default function WebsiteLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar isOpen={isOpen} setIsOpen={setIsOpen} />
-      <main className="flex-grow pt-[60px] md:pt-[64px]">{children}</main>
+      <main className="flex-grow pt-[80px] md:pt-[90px]">{children}</main>
       <Footer />
 
-      {/* Mobile Drawer - Lifted to Root level for highest stacking perspective */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -281,7 +280,7 @@ export default function WebsiteLayout({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 bottom-0 w-[85%] max-w-sm bg-white shadow-[20px_0_60px_-15px_rgba(0,0,0,0.3)] z-[100] p-8 flex flex-col"
+              className="fixed top-0 left-0 bottom-0 w-[65%] max-w-[280px] bg-white shadow-[20px_0_60px_-15px_rgba(0,0,0,0.3)] z-[100] p-8 flex flex-col"
             >
               <div className="flex justify-between items-center mb-12">
                 <Image

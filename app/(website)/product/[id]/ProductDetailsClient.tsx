@@ -97,7 +97,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
 
 
   return (
-    <div className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
+    <div className="pt-12 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
       <div className="flex flex-col lg:flex-row gap-16 mb-24">
         {/* Image Gallery */}
         <div className="w-full lg:w-1/2 space-y-4">
