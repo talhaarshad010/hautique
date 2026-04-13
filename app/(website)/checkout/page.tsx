@@ -105,7 +105,7 @@ export default function CheckoutPage() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen pt-32 px-6 flex flex-col items-center justify-center text-center">
+      <div className="min-h-screen pt-12 px-6 flex flex-col items-center justify-center text-center">>
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -134,7 +134,7 @@ export default function CheckoutPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
+      className="pt-12 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
     >
       <div className="flex items-center gap-4 mb-12">
         <Link href="/cart" className="hover:opacity-60 transition-opacity">

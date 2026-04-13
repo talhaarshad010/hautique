@@ -50,7 +50,7 @@ export default function DealsPage() {
   const getProductById = (id: string) => products.find(p => p.id === id);
 
   return (
-    <div className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
+    <div className="pt-12 pb-24 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
       <div className="max-w-xl mb-24">
         <h1 className="text-5xl md:text-7xl  mb-8 leading-tight uppercase tracking-tight">The Private Collection</h1>
         <p className="text-neutral-500 leading-relaxed max-w-md text-sm uppercase tracking-widest font-bold">

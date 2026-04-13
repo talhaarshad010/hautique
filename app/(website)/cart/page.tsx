@@ -34,7 +34,7 @@ export default function CartPage() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="min-h-screen pt-32 px-6 flex flex-col items-center justify-center text-center"
+        className="min-h-screen pt-12 px-6 flex flex-col items-center justify-center text-center"
       >
         <ShoppingBag className="w-16 h-16 text-neutral-200 mb-6" />
         <h1 className="text-3xl  mb-4">Your cart is empty</h1>
@@ -51,7 +51,7 @@ export default function CartPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
+      className="pt-12 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
     >
       <div className="flex items-center gap-4 mb-12">
         <Link href="/shop" className="hover:opacity-60 transition-opacity">

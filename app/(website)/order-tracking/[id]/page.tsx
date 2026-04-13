@@ -102,7 +102,7 @@ export default function OrderTrackingPage() {
   ];
 
   return (
-    <div className="pt-32 pb-24 px-6 md:px-12 max-w-6xl mx-auto">
+    <div className="pt-12 pb-24 px-6 md:px-12 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
         <div>

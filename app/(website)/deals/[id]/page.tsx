@@ -87,7 +87,7 @@ export default function DealDetailPage() {
 
   if (loading && !deal) {
     return (
-      <div className="pt-32 pb-24 px-6 flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+      <div className="pt-12 pb-24 px-6 flex flex-col items-center justify-center min-h-[60vh] space-y-4">>
         <Loader2 className="w-10 h-10 animate-spin text-neutral-200" />
         <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold italic">Unlocking Exclusive Campaign...</p>
       </div>
@@ -96,7 +96,7 @@ export default function DealDetailPage() {
 
   if (!deal) {
     return (
-      <div className="pt-40 pb-24 px-6 text-center max-w-xl mx-auto">
+      <div className="pt-20 pb-24 px-6 text-center max-w-xl mx-auto">>
         <Sparkles className="w-12 h-12 text-neutral-200 mx-auto mb-6" />
         <h2 className="text-3xl  mb-4 uppercase tracking-tight">Campaign Expired</h2>
         <p className="text-neutral-500 text-sm italic mb-12">This collection is no longer available or the link has changed.</p>
@@ -111,7 +111,7 @@ export default function DealDetailPage() {
     <div className="bg-white min-h-screen">
       {/* Dynamic Hero Section */}
       <section className="relative h-[45vh] sm:h-[55vh] md:h-[70vh] w-full bg-white overflow-hidden">
-        <div className="absolute inset-0 pt-24 md:pt-0 z-0 flex items-center justify-center">
+        <div className="absolute inset-0 pt-12 md:pt-0 z-0 flex items-center justify-center">>
           <div className="relative w-full h-full">
             <img 
               src={deal.image.includes('/upload/') ? deal.image.replace('/upload/', '/upload/f_auto,q_auto/') : deal.image} 

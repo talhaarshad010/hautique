@@ -89,7 +89,7 @@ export default function ForHimPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
+      className="pt-12 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
     >
       <div className="mb-16">
         <h1 className="text-4xl md:text-6xl uppercase tracking-tighter font-bold mb-4">

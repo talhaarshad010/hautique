@@ -42,7 +42,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   if (!productData) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-32">
+      <div className="min-h-screen flex items-center justify-center pt-12">
         <p className="text-xl  text-neutral-400 uppercase tracking-widest">Fragrance not found.</p>
       </div>
     );

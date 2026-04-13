@@ -104,7 +104,7 @@ function ShopContent() {
   const categories = ['All', 'For Her', 'For Him', 'Testers', 'Deals'];
 
   return (
-    <div className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
+    <div className="pt-12 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
         <div className="max-w-xl">
           <h1 className="text-5xl md:text-7xl  mb-8 leading-tight">The Boutique</h1>

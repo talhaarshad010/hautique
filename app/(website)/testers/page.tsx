@@ -67,7 +67,7 @@ export default function TestersPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
+      className="pt-12 pb-24 px-6 md:px-12 max-w-7xl mx-auto"
     >
       <div className="text-center mb-24 max-w-2xl mx-auto">
         <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-400 mb-4 block font-bold">Discover Excellence</span>
