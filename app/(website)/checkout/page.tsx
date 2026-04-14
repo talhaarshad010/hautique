@@ -22,7 +22,7 @@ export default function CheckoutPage() {
   const [formData, setFormData] = React.useState({
     fullName: "",
     email: "",
-    phone: "",
+    phone: "+92 ",
     address: "",
     city: "",
     postalCode: "",
@@ -50,6 +50,44 @@ export default function CheckoutPage() {
       router.push("/shop");
     }
   }, [cartItems, isSubmitted, router]);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+
+    let cleaned = input.replace(/[^\d+]/g, "");
+
+    // Handle starting with 0
+    if (cleaned.startsWith("0")) {
+      cleaned = "+92" + cleaned.substring(1);
+    } else if (!cleaned.startsWith("+") && cleaned.length > 0) {
+      // Handle user just typing digits like 311...
+      if (cleaned.startsWith("92")) {
+        cleaned = "+" + cleaned;
+      } else {
+        cleaned = "+92" + cleaned;
+      }
+    }
+
+    // Lock the prefix "+92"
+    if (cleaned.length < 3 || cleaned === "+92") {
+      setFormData({ ...formData, phone: "+92 " });
+      return;
+    }
+
+    const digits = cleaned.replace(/\D/g, "");
+    let formatted = cleaned;
+
+    if (digits.startsWith("92")) {
+      const network = digits.substring(2, 5);
+      const remainder = digits.substring(5, 12);
+
+      formatted = "+92";
+      if (network) formatted += " " + network;
+      if (remainder) formatted += " " + remainder;
+    }
+
+    setFormData({ ...formData, phone: formatted });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,15 +128,16 @@ export default function CheckoutPage() {
 
       // Send Admin Notification via ntfy
       try {
-        const topic = process.env.NEXT_PUBLIC_NTFY_TOPIC || "hautique_admin_alerts";
+        const topic =
+          process.env.NEXT_PUBLIC_NTFY_TOPIC || "hautique_admin_alerts";
         await fetch(`https://ntfy.sh/${topic}`, {
           method: "POST",
           body: `New order #${generatedId} from ${formData.fullName} for PKR ${total}.00`,
           headers: {
-            "Title": "New Hautique Order!",
-            "Tags": "package,moneybag",
-            "Click": `${window.location.origin}/admin/orders/${generatedId}`
-          }
+            Title: "New Hautique Order!",
+            Tags: "package,moneybag",
+            Click: `${window.location.origin}/admin/orders/${generatedId}`,
+          },
         });
       } catch (notifyError) {
         console.error("Failed to push admin notification:", notifyError);
@@ -213,11 +252,10 @@ export default function CheckoutPage() {
                 <Input
                   required
                   type="tel"
-                  placeholder="+1 (555) 000-0000"
+                  placeholder="+92 000 0000000"
                   value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
+                  onChange={handlePhoneChange}
+                  maxLength={16}
                 />
               </div>
             </div>

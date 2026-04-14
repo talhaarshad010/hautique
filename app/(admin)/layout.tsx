@@ -151,7 +151,7 @@ const Sidebar = ({ isOpen, setIsOpen, onLogout }: { isOpen: boolean; setIsOpen: 
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-0 left-0 bottom-0 w-64 bg-black text-white z-50 transition-transform duration-300 lg:translate-x-0',
+          'fixed top-0 left-0 bottom-0 w-64 bg-black text-white z-50 transition-transform duration-300 lg:translate-x-0 print:hidden',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -209,7 +209,7 @@ const Header = ({
   onBellClick: () => void;
 }) => {
   return (
-    <header className="h-20 bg-white border-b border-border px-6 md:px-12 flex items-center justify-between sticky top-0 z-30">
+    <header className="h-20 bg-white border-b border-border px-6 md:px-12 flex items-center justify-between sticky top-0 z-30 print:hidden">
       <div className="flex items-center gap-4">
         <button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
           <Menu className="w-6 h-6" />
@@ -320,15 +320,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 font-sans admin-panel">
+    <div className="min-h-screen bg-neutral-50 print:bg-white font-sans admin-panel">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} onLogout={handleLogout} />
-      <div className="lg:pl-64 flex flex-col min-h-screen">
+      <div className="lg:pl-64 flex flex-col min-h-screen print:pl-0 print:min-h-0">
         <Header
           setSidebarOpen={setSidebarOpen}
           newOrderCount={newOrderCount}
           onBellClick={handleBellClick}
         />
-        <main className="p-6 md:p-12 flex-grow">
+        <main className="p-6 md:p-12 flex-grow print:p-0">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
