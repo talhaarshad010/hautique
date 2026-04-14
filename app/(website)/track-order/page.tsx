@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { useRouter } from 'next/navigation';
-import { Button, Input, Card } from '@/components/ui';
-import { Search, ShoppingBag, ArrowRight, Clock, Package } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { Button, Input, Card } from "@/components/ui";
+import { Search, ShoppingBag, ArrowRight, Clock, Package } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 export default function TrackOrderSearchPage() {
-  const [orderId, setOrderId] = React.useState('');
+  const [orderId, setOrderId] = React.useState("");
   const [recentOrders, setRecentOrders] = React.useState<string[]>([]);
   const router = useRouter();
 
   React.useEffect(() => {
-    const saved = localStorage.getItem('hautique_recent_orders');
+    const saved = localStorage.getItem("hautique_recent_orders");
     if (saved) {
       try {
         setRecentOrders(JSON.parse(saved));
@@ -27,7 +27,7 @@ export default function TrackOrderSearchPage() {
     if (orderId.trim()) {
       const id = orderId.trim().toUpperCase();
       // Ensure it has the ORD- prefix if not typed
-      const formattedId = id.startsWith('ORD-') ? id : `ORD-${id}`;
+      const formattedId = id.startsWith("ORD-") ? id : `ORD-${id}`;
       router.push(`/order-tracking/${formattedId}`);
     }
   };
@@ -42,7 +42,8 @@ export default function TrackOrderSearchPage() {
       >
         <h1 className="text-5xl  mb-6 tracking-tight">Track Your Order</h1>
         <p className="text-neutral-500 max-w-lg mx-auto uppercase tracking-widest text-[10px] leading-loose">
-          Enter your order ID from your confirmation email to check the current status of your luxury fragrance delivery.
+          Enter your order ID from your confirmation email to check the current
+          status of your luxury fragrance delivery.
         </p>
       </motion.div>
 
@@ -50,14 +51,17 @@ export default function TrackOrderSearchPage() {
         <form onSubmit={handleSearch} className="space-y-6">
           <div className="relative">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 font-bold" />
-            <Input 
+            <Input
               placeholder="E.G. ORD-XJ7Y2A"
               className="pl-14 h-16 text-lg tracking-[0.2em] font-bold uppercase border-none bg-white shadow-inner"
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
             />
           </div>
-          <Button size="lg" className="w-full h-16 text-xs uppercase tracking-[0.3em] font-black">
+          <Button
+            size="lg"
+            className="w-full h-16 text-xs uppercase tracking-[0.3em] font-black"
+          >
             Track Journey
           </Button>
         </form>
@@ -72,9 +76,11 @@ export default function TrackOrderSearchPage() {
           >
             <div className="flex items-center gap-4">
               <Clock className="w-4 h-4 text-neutral-400" />
-              <h2 className="text-[10px] uppercase tracking-[0.3em] font-black text-neutral-400">Recent Orders</h2>
+              <h2 className="text-[10px] uppercase tracking-[0.3em] font-black text-neutral-400">
+                Recent Orders
+              </h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {recentOrders.map((id) => (
                 <button
@@ -87,8 +93,12 @@ export default function TrackOrderSearchPage() {
                       <Package className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold tracking-widest mb-1">{id}</p>
-                      <p className="text-[8px] text-neutral-400 uppercase tracking-widest">Click to view details</p>
+                      <p className="text-sm font-bold tracking-widest mb-1">
+                        {id}
+                      </p>
+                      <p className="text-[8px] text-neutral-400 uppercase tracking-widest">
+                        Click to view details
+                      </p>
                     </div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-neutral-300 group-hover:text-black group-hover:translate-x-1 transition-all" />
@@ -98,18 +108,6 @@ export default function TrackOrderSearchPage() {
           </motion.section>
         )}
       </AnimatePresence>
-
-      <div className="mt-24 text-center">
-        <p className="text-[10px] text-neutral-300 uppercase tracking-[0.4em] mb-8">Can't find your ID?</p>
-        <div className="flex justify-center gap-12">
-          <button className="text-[10px] font-bold uppercase tracking-widest hover:text-black transition-colors text-neutral-400 underline underline-offset-8">
-            Check Email
-          </button>
-          <button className="text-[10px] font-bold uppercase tracking-widest hover:text-black transition-colors text-neutral-400 underline underline-offset-8">
-            Contact Support
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

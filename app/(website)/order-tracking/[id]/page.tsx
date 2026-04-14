@@ -215,6 +215,8 @@ export default function OrderTrackingPage() {
             <div className="space-y-6">
               {order.items?.map((item: any, idx: number) => {
                 const product = products.find((p) => p.id === item.productId);
+                const imageUrl = item.image || product?.image || "https://picsum.photos/seed/p/200/300";
+                
                 return (
                   <div
                     key={idx}
@@ -224,8 +226,9 @@ export default function OrderTrackingPage() {
                       <div className="w-16 h-20 bg-neutral-50 border border-neutral-100 overflow-hidden rounded relative">
                         <img
                           src={
-                            product?.image ||
-                            "https://picsum.photos/seed/p/200/300"
+                            imageUrl.includes("/upload/")
+                              ? imageUrl.replace("/upload/", "/upload/f_auto,q_auto/")
+                              : imageUrl
                           }
                           alt={item.name}
                           className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all"
