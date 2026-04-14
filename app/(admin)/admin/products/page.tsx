@@ -12,7 +12,7 @@ import { useCloudinary } from '@/hooks/useCloudinary';
 import { ref, onValue, remove, set } from 'firebase/database';
 import { database } from '@/lib/firebase';
 
-const CATEGORIES = ['For Her', 'For Him', 'Testers'] as const;
+const CATEGORIES = ['For Her', 'For Him', 'Unisex', 'Testers', 'Deals'] as const;
 
 function AdminProductsContent() {
   const { pushData, loading: databaseLoading } = useDatabase();
@@ -38,7 +38,8 @@ function AdminProductsContent() {
     image: '',
     gallery: [] as string[],
     isNew: true,
-    sizes: [] as string[]
+    sizes: [] as string[],
+    sizePrice: {} as Record<string, string>
   });
 
   // Fetch Products from Firebase
@@ -117,6 +118,9 @@ function AdminProductsContent() {
       const entry = {
         ...formData,
         price: Number(formData.price),
+        sizePrice: Object.fromEntries(
+          Object.entries(formData.sizePrice || {}).map(([size, price]) => [size, Number(price)])
+        ),
         updatedAt: new Date().toISOString()
       };
 
@@ -146,7 +150,10 @@ function AdminProductsContent() {
       image: product.image,
       gallery: product.gallery || [],
       isNew: product.isNew || false,
-      sizes: product.sizes || []
+      sizes: product.sizes || [],
+      sizePrice: Object.fromEntries(
+        Object.entries(product.sizePrice || {}).map(([size, price]) => [size, price.toString()])
+      )
     });
     setIsModalOpen(true);
   };
@@ -173,7 +180,8 @@ function AdminProductsContent() {
       image: '',
       gallery: [],
       isNew: true,
-      sizes: []
+      sizes: [],
+      sizePrice: {}
     });
   };
 
@@ -436,6 +444,41 @@ function AdminProductsContent() {
                         </button>
                     </div>
                   </div>
+                  
+                  {/* Size Specific Prices */}
+                  {formData.sizes.length > 0 && (
+                    <div className="space-y-4 bg-neutral-50 p-6">
+                      <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 block mb-2">Configure Prices for Selected Sizes</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {formData.sizes.map((size) => (
+                          <div key={size} className="flex items-center gap-4 bg-white p-3 border border-neutral-100">
+                            <span className="text-[10px] uppercase tracking-widest font-bold w-12">{size}</span>
+                            <div className="relative flex-grow">
+                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-neutral-400 font-bold">PKR</span>
+                              <input 
+                                type="number"
+                                placeholder={formData.price || "Price"}
+                                value={formData.sizePrice?.[size] || ''}
+                                onChange={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    sizePrice: {
+                                      ...formData.sizePrice,
+                                      [size]: e.target.value
+                                    }
+                                  });
+                                }}
+                                className="w-full bg-neutral-50 border-none pl-12 pr-4 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-black"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[8px] uppercase tracking-widest text-neutral-400 font-bold italic mt-2">
+                        * Leave blank to use the default product price for that size.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-3">

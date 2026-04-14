@@ -109,7 +109,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
             <img
               src={selectedImage.includes('/upload/') ? selectedImage.replace('/upload/', '/upload/f_auto,q_auto/') : selectedImage}
               alt={product.name}
-              className="w-full h-full object-contain transition-all duration-500"
+              className="w-full h-full object-cover transition-all duration-500"
             />
             {product.isNew && <Badge className="absolute top-6 left-6">New Arrival</Badge>}
           </motion.div>
@@ -125,7 +125,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
                 <img
                   src={imgUrl.includes('/upload/') ? imgUrl.replace('/upload/', '/upload/f_auto,q_auto/') : imgUrl}
                   alt={`Thumbnail ${i}`}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                 />
               </div>
             ))}
@@ -137,7 +137,7 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
           <div className="mb-8">
             <span className="text-xs uppercase tracking-[0.3em] text-neutral-400 mb-4 block">{product.brand}</span>
             <h1 className="text-4xl md:text-5xl  mb-4 leading-tight">{product.name}</h1>
-            <p className="text-2xl font-medium">PKR {product.price}.00</p>
+            <p className="text-2xl font-medium">PKR {product.sizePrice?.[selectedSize] || product.price}.00</p>
           </div>
 
           <p className="text-neutral-600 leading-relaxed mb-10 border-b border-border pb-10">
@@ -191,7 +191,8 @@ export default function ProductDetailsClient({ initialProduct, productId }: Prod
                 size="lg" 
                 className="flex-grow"
                 onClick={() => {
-                  addToCart(product, quantity, selectedSize);
+                  const currentPrice = product.sizePrice?.[selectedSize] || product.price;
+                  addToCart({ ...product, price: currentPrice }, quantity, selectedSize);
                   router.push('/cart');
                 }}
               >

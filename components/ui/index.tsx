@@ -79,3 +79,8 @@ export const Badge = ({ children, className }: { children: React.ReactNode; clas
 export const Card = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <div className={cn('bg-white border border-border p-6', className)}>{children}</div>
 );
+
+export const Skeleton = ({ className }: { className?: string }) => (
+  <div className={cn("animate-pulse bg-neutral-100", className)} />
+);
+

@@ -4,49 +4,40 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
-import { Button, Badge, Input, cn } from "@/components/ui";
-import { type Product } from "@/lib/mock-data";
+import { Button, Badge, Input, cn, Skeleton } from "@/components/ui";
+import { type Product, type Deal } from "@/lib/mock-data";
 import { ArrowRight, ShoppingCart, Loader2 } from "lucide-react";
 import { ref, onValue } from "firebase/database";
 import { database } from "@/lib/firebase";
 import { useCart } from "@/context/CartContext";
 import { Check } from "lucide-react";
 
-const Hero = ({ dynamicSlides }: { dynamicSlides?: any[] }) => {
+const Hero = ({ dynamicSlides, loading }: { dynamicSlides?: any[], loading?: boolean }) => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
 
-  const defaultSlides = [
-    {
-      image: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=1920",
-      imageTablet: "",
-      imageMobile: "",
-      tag: "Exquisite Fragrances",
-      title: "The Art of \n Invisible Luxury",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=1920",
-      imageTablet: "",
-      imageMobile: "",
-      tag: "New Collection",
-      title: "Elegance in \n Every Drop",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=1920",
-      imageTablet: "",
-      imageMobile: "",
-      tag: "Limited Edition",
-      title: "Scent of \n Distinction",
-    },
-  ];
-
-  const slides = dynamicSlides && dynamicSlides.length > 0 ? dynamicSlides : defaultSlides;
+  const slides = dynamicSlides || [];
 
   React.useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(timer);
+    if (slides.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % slides.length);
+      }, 5000);
+      return () => clearInterval(timer);
+    }
   }, [slides.length]);
+
+  if (loading || slides.length === 0) {
+    return (
+      <section className="relative h-[45vh] sm:h-[65vh] md:h-[80vh] w-full bg-neutral-50 overflow-hidden">
+        <Skeleton className="w-full h-full" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          <Skeleton className="h-4 w-32 mb-6" />
+          <Skeleton className="h-12 md:h-20 w-3/4 max-w-2xl mb-8" />
+          <Skeleton className="h-1 w-48" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative h-[45vh] sm:h-[65vh] md:h-[80vh] w-full bg-white overflow-hidden">
@@ -123,7 +114,13 @@ const Hero = ({ dynamicSlides }: { dynamicSlides?: any[] }) => {
   );
 };
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ 
+  product, 
+  href 
+}: { 
+  product: Product;
+  href?: string;
+}) => {
   const { addToCart } = useCart();
   const [adding, setAdding] = React.useState(false);
 
@@ -143,14 +140,14 @@ const ProductCard = ({ product }: { product: Product }) => {
       className="group relative flex flex-col bg-white border border-neutral-100 overflow-hidden"
     >
       <Link
-        href={`/product/${product.id}`}
+        href={href || `/product/${product.id}`}
         className="relative aspect-[4/5] overflow-hidden"
       >
         <Image
           src={product.image}
           alt={product.name}
           fill
-          className="object-contain transition-transform duration-700 group-hover:scale-110"
+          className="object-cover transition-transform duration-700 group-hover:scale-110 w-full"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
         {product.isNew && (
@@ -200,18 +197,37 @@ const ProductCard = ({ product }: { product: Product }) => {
 
 const ProductGrid = ({
   title,
+  exploreUrl,
   products,
   loading,
 }: {
   title: string;
-  products: Product[];
+  exploreUrl?: string;
+  products: (Product & { href?: string })[];
   loading?: boolean;
 }) => {
   if (loading) {
     return (
-      <section className="py-24 px-6 md:px-12">
-        <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-neutral-300" />
+      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto w-full">
+        <div className="flex justify-between items-end mb-16 border-b border-neutral-100 pb-8">
+          <div>
+            <Skeleton className="h-3 w-20 mb-4" />
+            <Skeleton className="h-10 w-48" />
+          </div>
+          <Skeleton className="h-4 w-24" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="space-y-6">
+              <Skeleton className="aspect-[4/5] w-full" />
+              <div className="space-y-3 flex flex-col items-center">
+                <Skeleton className="h-3 w-20 mx-auto" />
+                <Skeleton className="h-6 w-40 mx-auto" />
+                <Skeleton className="h-4 w-24 mx-auto" />
+                <Skeleton className="h-12 w-full mt-4" />
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     );
@@ -229,15 +245,15 @@ const ProductGrid = ({
           <h2 className="text-4xl md:text-5xl ">{title}</h2>
         </div>
         <Link
-          href="/shop"
+          href={exploreUrl || "/shop"}
           className="text-[10px] uppercase tracking-[0.2em] font-bold flex items-center gap-3 hover:gap-5 transition-all group border-b border-black pb-1"
         >
           Explore All <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {products.slice(0, 4).map((product) => (
+          <ProductCard key={product.id} product={product} href={product.href} />
         ))}
       </div>
     </section>
@@ -246,6 +262,7 @@ const ProductGrid = ({
 
 export default function HomePage() {
   const [productsList, setProductsList] = React.useState<Product[]>([]);
+  const [dealsList, setDealsList] = React.useState<Deal[]>([]);
   const [heroSlides, setHeroSlides] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -264,6 +281,21 @@ export default function HomePage() {
         setProductsList(formattedProducts);
       }
       setLoading(false);
+    });
+
+    // Fetch Deals
+    const dealsRef = ref(database, "deals");
+    onValue(dealsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formattedDeals = Object.entries(data).map(
+          ([id, deal]: [string, any]) => ({
+            id,
+            ...deal,
+          }),
+        );
+        setDealsList(formattedDeals);
+      }
     });
 
     // Fetch Hero Slider
@@ -286,24 +318,59 @@ export default function HomePage() {
     };
   }, []);
 
-  const deals = productsList.filter((p) => p.category === "Deals");
+  const productDeals = productsList.filter((p) => p.category === "Deals");
+  const dynamicDeals = dealsList.map(d => ({
+    id: d.id,
+    name: d.name,
+    brand: d.subtextText || 'Deal Collection',
+    price: d.price || 0,
+    category: 'Deals' as const,
+    image: d.image,
+    description: d.subtextText || '',
+    href: `/deals/${d.id}`
+  }));
+  const deals = [...dynamicDeals, ...productDeals];
+  
   const testers = productsList.filter((p) => p.category === "Testers");
   const forHer = productsList.filter((p) => p.category === "For Her");
   const forHim = productsList.filter((p) => p.category === "For Him");
+  const unisex = productsList.filter((p) => p.category === "Unisex");
 
   return (
     <div className="pt-0 bg-white">
-      <Hero dynamicSlides={heroSlides} />
-      <ProductGrid title="Exclusive Deals" products={deals} loading={loading} />
+      <Hero dynamicSlides={heroSlides} loading={loading} />
 
       <div className="divide-y divide-neutral-50">
         <ProductGrid
           title="Try Our Testers"
           products={testers}
           loading={loading}
+          exploreUrl="/testers"
         />
-        <ProductGrid title="For Her" products={forHer} loading={loading} />
-        <ProductGrid title="For Him" products={forHim} loading={loading} />
+        <ProductGrid 
+          title="For Her" 
+          products={forHer} 
+          loading={loading} 
+          exploreUrl="/for-her" 
+        />
+        <ProductGrid 
+          title="For Him" 
+          products={forHim} 
+          loading={loading} 
+          exploreUrl="/for-him" 
+        />
+        <ProductGrid 
+          title="Unisex" 
+          products={unisex} 
+          loading={loading} 
+          exploreUrl="/unisex" 
+        />
+        <ProductGrid 
+          title="Exclusive Deals" 
+          products={deals} 
+          loading={loading} 
+          exploreUrl="/deals"
+        />
       </div>
     </div>
   );

@@ -3,12 +3,13 @@ export interface Product {
   name: string;
   brand: string;
   price: number;
-  category: 'For Her' | 'For Him' | 'Testers' | 'Deals';
+  category: 'For Her' | 'For Him' | 'Unisex' | 'Testers' | 'Deals';
   image: string;
   gallery?: string[];
   description: string;
   isNew?: boolean;
   sizes?: string[];
+  sizePrice?: Record<string, number>;
 }
 
 export interface Order {
@@ -34,6 +35,7 @@ export interface Deal {
   price?: number;
   gallery?: string[];
   productIds?: string[];
+  productSizes?: Record<string, string[]>;
 }
 // kdjfkjdkj
 export const products: Product[] = [

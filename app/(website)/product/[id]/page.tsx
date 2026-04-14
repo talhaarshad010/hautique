@@ -11,8 +11,9 @@ interface ProductPageProps {
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { id } = await params;
   const dbRef = ref(database);
-  const snapshot = await get(child(dbRef, `products/${params.id}`));
+  const snapshot = await get(child(dbRef, `products/${id}`));
   const product = snapshot.val();
   
   if (!product) return { title: 'Hautique - Signature Collection' };
@@ -36,8 +37,9 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
+  const { id } = await params;
   const dbRef = ref(database);
-  const snapshot = await get(child(dbRef, `products/${params.id}`));
+  const snapshot = await get(child(dbRef, `products/${id}`));
   const productData = snapshot.val();
 
   if (!productData) {
@@ -48,7 +50,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     );
   }
 
-  const product = { id: params.id, ...productData };
+  const product = { id: id, ...productData };
 
-  return <ProductDetailsClient initialProduct={product} productId={params.id} />;
+  return <ProductDetailsClient initialProduct={product} productId={id} />;
 }

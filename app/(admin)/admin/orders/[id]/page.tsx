@@ -178,8 +178,7 @@ export default function OrderDetailPage() {
             <div className="divide-y divide-neutral-100">
               {order.items?.map((item: any, idx: number) => {
                 // Find the product image from our mock data or use a fallback
-                const product = products.find(p => p.id === item.productId);
-                const imageUrl = product?.image || 'https://picsum.photos/seed/perfume/200/300';
+                const imageUrl = item.image || products.find(p => p.id === item.productId)?.image || 'https://picsum.photos/seed/perfume/200/300';
                 
                 return (
                   <div key={idx} className="p-6 flex items-center gap-6">

@@ -72,7 +72,8 @@ export default function CheckoutPage() {
           name: item.name,
           quantity: item.quantity,
           price: item.price,
-          size: item.selectedSize,
+          size: item.selectedSize || "Standard",
+          image: item.image,
         })),
         total: total,
         shippingFee: shipping,
@@ -86,6 +87,22 @@ export default function CheckoutPage() {
       };
 
       await set(newOrderRef, newOrder);
+
+      // Send Admin Notification via ntfy
+      try {
+        const topic = process.env.NEXT_PUBLIC_NTFY_TOPIC || "hautique_admin_alerts";
+        await fetch(`https://ntfy.sh/${topic}`, {
+          method: "POST",
+          body: `New order #${generatedId} from ${formData.fullName} for PKR ${total}.00`,
+          headers: {
+            "Title": "New Hautique Order!",
+            "Tags": "package,moneybag",
+            "Click": `${window.location.origin}/admin/orders/${generatedId}`
+          }
+        });
+      } catch (notifyError) {
+        console.error("Failed to push admin notification:", notifyError);
+      }
 
       // Save order to local history
       const savedOrders = JSON.parse(

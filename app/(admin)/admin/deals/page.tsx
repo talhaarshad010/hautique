@@ -41,7 +41,8 @@ export default function DealsPage() {
     image: '',
     price: '',
     gallery: [] as string[],
-    productIds: [] as string[]
+    productIds: [] as string[],
+    productSizes: {} as Record<string, string[]>
   });
 
   // Fetch Deals from Firebase
@@ -93,10 +94,25 @@ export default function DealsPage() {
   const toggleProductSelection = (productId: string) => {
     setFormData(prev => {
       const current = prev.productIds || [];
+      const currentSizes = prev.productSizes || {};
       if (current.includes(productId)) {
-        return { ...prev, productIds: current.filter(id => id !== productId) };
+        const newSizes = { ...currentSizes };
+        delete newSizes[productId];
+        return { 
+          ...prev, 
+          productIds: current.filter(id => id !== productId),
+          productSizes: newSizes
+        };
       } else {
-        return { ...prev, productIds: [...current, productId] };
+        const product = productsList.find(p => p.id === productId);
+        return { 
+          ...prev, 
+          productIds: [...current, productId],
+          productSizes: {
+            ...currentSizes,
+            [productId]: product?.sizes || []
+          }
+        };
       }
     });
   };
@@ -168,7 +184,8 @@ export default function DealsPage() {
       image: deal.image,
       price: deal.price?.toString() || '',
       gallery: deal.gallery || [],
-      productIds: deal.productIds || []
+      productIds: deal.productIds || [],
+      productSizes: deal.productSizes || {}
     });
     setIsModalOpen(true);
   };
@@ -194,7 +211,8 @@ export default function DealsPage() {
       image: '',
       price: '',
       gallery: [],
-      productIds: []
+      productIds: [],
+      productSizes: {}
     });
   };
 
@@ -432,29 +450,75 @@ export default function DealsPage() {
                     </span>
                   </div>
 
-                  {/* Selected Products Preview */}
+                  {/* Selected Products Preview with Size Selection */}
                   {formData.productIds.length > 0 && (
-                    <div className="flex flex-wrap gap-2 pb-4">
+                    <div className="space-y-6">
                       {formData.productIds.map((pid) => {
                         const product = getProductById(pid);
                         if (!product) return null;
                         return (
-                          <div key={pid} className="flex items-center gap-2 bg-neutral-50 rounded-full pl-1 pr-3 py-1">
-                            <div className="w-6 h-6 rounded-full overflow-hidden">
-                              <img 
-                                src={product.image.includes('/upload/') ? product.image.replace('/upload/', '/upload/f_auto,q_auto,w_50/') : product.image} 
-                                alt={product.name} 
-                                className="w-full h-full object-cover" 
-                              />
+                          <div key={pid} className="bg-neutral-50 p-6 space-y-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full overflow-hidden border border-neutral-200">
+                                  <img 
+                                    src={product.image.includes('/upload/') ? product.image.replace('/upload/', '/upload/f_auto,q_auto,w_80/') : product.image} 
+                                    alt={product.name} 
+                                    className="w-full h-full object-cover" 
+                                  />
+                                </div>
+                                <div>
+                                  <p className="text-[10px] uppercase tracking-widest font-bold">{product.name}</p>
+                                  <p className="text-[8px] uppercase tracking-widest text-neutral-400 font-bold">{product.category}</p>
+                                </div>
+                              </div>
+                              <button 
+                                type="button" 
+                                onClick={() => toggleProductSelection(pid)} 
+                                className="p-2 hover:bg-neutral-200 rounded-full transition-colors text-neutral-400"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
                             </div>
-                            <span className="text-[9px] uppercase tracking-widest font-bold">{product.name}</span>
-                            <button 
-                              type="button" 
-                              onClick={() => toggleProductSelection(pid)} 
-                              className="text-neutral-400 hover:text-red-500 transition-colors"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
+
+                            <div className="space-y-2">
+                              <label className="text-[8px] uppercase tracking-widest font-bold text-neutral-400">Included ML Sizes</label>
+                              <div className="flex flex-wrap gap-2">
+                                {(product.sizes || []).map(size => {
+                                  const isIncluded = formData.productSizes?.[pid]?.includes(size);
+                                  return (
+                                    <button
+                                      key={size}
+                                      type="button"
+                                      onClick={() => {
+                                        const currentSizes = formData.productSizes?.[pid] || [];
+                                        const newSizes = isIncluded 
+                                          ? currentSizes.filter(s => s !== size)
+                                          : [...currentSizes, size];
+                                        setFormData({
+                                          ...formData,
+                                          productSizes: {
+                                            ...formData.productSizes,
+                                            [pid]: newSizes
+                                          }
+                                        });
+                                      }}
+                                      className={cn(
+                                        "px-4 py-1.5 text-[8px] uppercase tracking-[0.2em] font-bold border transition-all",
+                                        isIncluded 
+                                          ? "bg-black text-white border-black" 
+                                          : "bg-white text-neutral-300 border-neutral-100 hover:border-black hover:text-black"
+                                      )}
+                                    >
+                                      {size}
+                                    </button>
+                                  );
+                                })}
+                                {(product.sizes || []).length === 0 && (
+                                  <p className="text-[8px] uppercase tracking-widest text-neutral-300 font-bold italic">No sizes defined for this product</p>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         );
                       })}
