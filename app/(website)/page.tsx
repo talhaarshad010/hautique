@@ -12,7 +12,13 @@ import { database } from "@/lib/firebase";
 import { useCart } from "@/context/CartContext";
 import { Check } from "lucide-react";
 
-const Hero = ({ dynamicSlides, loading }: { dynamicSlides?: any[], loading?: boolean }) => {
+const Hero = ({
+  dynamicSlides,
+  loading,
+}: {
+  dynamicSlides?: any[];
+  loading?: boolean;
+}) => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
 
   const slides = dynamicSlides || [];
@@ -56,42 +62,53 @@ const Hero = ({ dynamicSlides, loading }: { dynamicSlides?: any[], loading?: boo
               src={slides[currentSlide].image}
               alt="Luxury Perfume"
               fill
-              className="hidden lg:block object-cover brightness-95 md:brightness-90"
+              className="hidden lg:block object-cover brightness-100 md:brightness-100"
               priority
             />
             {/* Tablet Image */}
             <Image
-              src={slides[currentSlide].imageTablet || slides[currentSlide].image}
+              src={
+                slides[currentSlide].imageTablet || slides[currentSlide].image
+              }
               alt="Luxury Perfume"
               fill
-              className="hidden md:block lg:hidden object-cover brightness-95 md:brightness-90"
+              className="hidden md:block lg:hidden object-cover brightness-100 md:brightness-100"
               priority
             />
             {/* Mobile Image */}
             <Image
-              src={slides[currentSlide].imageMobile || slides[currentSlide].image}
+              src={
+                slides[currentSlide].imageMobile || slides[currentSlide].image
+              }
               alt="Luxury Perfume"
               fill
-              className="block md:hidden object-cover brightness-95 md:brightness-90"
+              className="block md:hidden object-cover brightness-100"
               priority
             />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 text-white bg-black/10 md:bg-black/20">
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-xs md:text-sm uppercase tracking-[0.3em] mb-6 font-medium"
-              >
-                {slides[currentSlide].tag}
-              </motion.span>
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-5xl md:text-8xl  mb-8 max-w-4xl leading-tight whitespace-pre-line"
-              >
-                {slides[currentSlide].title}
-              </motion.h1>
+            <div className={cn(
+              "absolute inset-0 flex flex-col items-center justify-center text-center px-6 text-white",
+              (slides[currentSlide].tag || slides[currentSlide].title) && "bg-black/10 md:bg-black/20"
+            )}>
+              {slides[currentSlide].tag && (
+                <motion.span
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="text-xs md:text-sm uppercase tracking-[0.3em] mb-6 font-medium"
+                >
+                  {slides[currentSlide].tag}
+                </motion.span>
+              )}
+              {slides[currentSlide].title && (
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="text-5xl md:text-8xl  mb-8 max-w-4xl leading-tight whitespace-pre-line"
+                >
+                  {slides[currentSlide].title}
+                </motion.h1>
+              )}
             </div>
           </div>
         </motion.div>
@@ -114,10 +131,10 @@ const Hero = ({ dynamicSlides, loading }: { dynamicSlides?: any[], loading?: boo
   );
 };
 
-const ProductCard = ({ 
-  product, 
-  href 
-}: { 
+const ProductCard = ({
+  product,
+  href,
+}: {
   product: Product;
   href?: string;
 }) => {
@@ -171,11 +188,13 @@ const ProductCard = ({
         </p>
         <Button
           onClick={handleAdd}
-          variant={adding ? "default" : "outline"}
+          variant={adding ? "primary" : "outline"}
           size="sm"
           className={cn(
             "w-full rounded-none border-neutral-200 transition-all text-[10px] uppercase tracking-widest h-12 font-bold",
-            adding ? "bg-green-600 border-green-600 text-white" : "group-hover:bg-black group-hover:text-white group-hover:border-black"
+            adding
+              ? "bg-green-600 border-green-600 text-white"
+              : "group-hover:bg-black group-hover:text-white group-hover:border-black",
           )}
         >
           {adding ? (
@@ -319,18 +338,18 @@ export default function HomePage() {
   }, []);
 
   const productDeals = productsList.filter((p) => p.category === "Deals");
-  const dynamicDeals = dealsList.map(d => ({
+  const dynamicDeals = dealsList.map((d) => ({
     id: d.id,
     name: d.name,
-    brand: d.subtextText || 'Deal Collection',
+    brand: d.subtextText || "Deal Collection",
     price: d.price || 0,
-    category: 'Deals' as const,
+    category: "Deals" as const,
     image: d.image,
-    description: d.subtextText || '',
-    href: `/deals/${d.id}`
+    description: d.subtextText || "",
+    href: `/deals/${d.id}`,
   }));
   const deals = [...dynamicDeals, ...productDeals];
-  
+
   const testers = productsList.filter((p) => p.category === "Testers");
   const forHer = productsList.filter((p) => p.category === "For Her");
   const forHim = productsList.filter((p) => p.category === "For Him");
@@ -347,28 +366,28 @@ export default function HomePage() {
           loading={loading}
           exploreUrl="/testers"
         />
-        <ProductGrid 
-          title="For Her" 
-          products={forHer} 
-          loading={loading} 
-          exploreUrl="/for-her" 
+        <ProductGrid
+          title="For Her"
+          products={forHer}
+          loading={loading}
+          exploreUrl="/for-her"
         />
-        <ProductGrid 
-          title="For Him" 
-          products={forHim} 
-          loading={loading} 
-          exploreUrl="/for-him" 
+        <ProductGrid
+          title="For Him"
+          products={forHim}
+          loading={loading}
+          exploreUrl="/for-him"
         />
-        <ProductGrid 
-          title="Unisex" 
-          products={unisex} 
-          loading={loading} 
-          exploreUrl="/unisex" 
+        <ProductGrid
+          title="Unisex"
+          products={unisex}
+          loading={loading}
+          exploreUrl="/unisex"
         />
-        <ProductGrid 
-          title="Exclusive Deals" 
-          products={deals} 
-          loading={loading} 
+        <ProductGrid
+          title="Exclusive Deals"
+          products={deals}
+          loading={loading}
           exploreUrl="/deals"
         />
       </div>

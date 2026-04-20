@@ -112,14 +112,7 @@ export default function DealsPage() {
                     <div className="absolute -inset-4 bg-neutral-50/50 -z-10 rounded-3xl rotate-2 group-hover:rotate-0 transition-transform duration-700" />
                     <div className="relative aspect-[16/10] overflow-hidden bg-neutral-50 border border-neutral-100 shadow-2xl">
                       <img
-                        src={
-                          deal.image.includes("/upload/")
-                            ? deal.image.replace(
-                                "/upload/",
-                                "/upload/f_auto,q_auto/",
-                              )
-                            : deal.image
-                        }
+                        src={deal.image}
                         alt={deal.name}
                         className="w-full h-full object-contain transition-transform duration-1000 scale-100 group-hover:scale-105"
                       />

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { ref, onValue, set, push, remove, update } from 'firebase/database';
 import { database } from '@/lib/firebase';
 import { Button, Input } from '@/components/ui';
-import { Truck, Save, Loader2, CheckCircle2, UserPlus, Trash2, ShieldCheck, Mail, Lock, KeyRound, Eye, EyeOff, Minus, Plus } from 'lucide-react';
+import { Truck, Save, Loader2, CheckCircle2, UserPlus, Trash2, ShieldCheck, Mail, Lock, KeyRound, Eye, EyeOff, Minus, Plus, Tag, ToggleLeft, ToggleRight, Percent, DollarSign } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function SettingsPage() {
@@ -26,6 +26,19 @@ export default function SettingsPage() {
   const [changingPassword, setChangingPassword] = React.useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
+
+  // Promo Code State
+  interface PromoCode {
+    id: string;
+    code: string;
+    discountType: 'percentage' | 'fixed';
+    discountValue: number;
+    active: boolean;
+    createdAt: string;
+  }
+  const [promoCodes, setPromoCodes] = React.useState<PromoCode[]>([]);
+  const [newPromo, setNewPromo] = React.useState({ code: '', discountType: 'percentage' as 'percentage' | 'fixed', discountValue: '' });
+  const [isAddingPromo, setIsAddingPromo] = React.useState(false);
 
   React.useEffect(() => {
     const settingsRef = ref(database, 'settings');
@@ -51,9 +64,24 @@ export default function SettingsPage() {
       setLoading(false);
     });
 
+    const promoRef = ref(database, 'settings/promoCodes');
+    const unsubscribePromo = onValue(promoRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formatted = Object.entries(data).map(([id, promo]: [string, any]) => ({
+          id,
+          ...promo
+        }));
+        setPromoCodes(formatted);
+      } else {
+        setPromoCodes([]);
+      }
+    });
+
     return () => {
       unsubscribeSettings();
       unsubscribeAdmins();
+      unsubscribePromo();
     };
   }, []);
 
@@ -286,6 +314,196 @@ export default function SettingsPage() {
               <div className="flex justify-between items-center text-xs">
                 <span className="text-neutral-500 italic">Method</span>
                 <span className="font-bold ">Standard Flat Rate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Promo Codes Section */}
+      <div className="pt-12 border-t border-border">
+        <div className="flex flex-col gap-2 mb-8">
+          <h2 className="text-3xl  tracking-tight">Promo Codes</h2>
+          <p className="text-neutral-400 text-sm uppercase tracking-widest">Create and manage discount codes for customers</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-white border border-border rounded-2xl overflow-hidden">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-neutral-50 border-b border-border">
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-neutral-400">Code</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-neutral-400">Discount</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-neutral-400">Status</th>
+                    <th className="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-neutral-400 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  {promoCodes.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-12 text-center text-neutral-400 text-xs italic">
+                        No promo codes created yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    promoCodes.map((promo) => (
+                      <tr key={promo.id} className="hover:bg-neutral-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center">
+                              <Tag className="w-3.5 h-3.5 text-black" />
+                            </div>
+                            <span className="text-sm font-bold uppercase tracking-widest">{promo.code}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-bold">
+                            {promo.discountType === 'percentage' ? `${promo.discountValue}%` : `PKR ${promo.discountValue}`}
+                          </span>
+                          <p className="text-[9px] uppercase tracking-widest text-neutral-400 font-bold mt-0.5">
+                            {promo.discountType === 'percentage' ? 'Percentage Off' : 'Fixed Amount'}
+                          </p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={async () => {
+                              await update(ref(database, `settings/promoCodes/${promo.id}`), { active: !promo.active });
+                            }}
+                            className="flex items-center gap-2 group"
+                          >
+                            {promo.active ? (
+                              <ToggleRight className="w-6 h-6 text-green-600 group-hover:text-green-700 transition-colors" />
+                            ) : (
+                              <ToggleLeft className="w-6 h-6 text-neutral-300 group-hover:text-neutral-500 transition-colors" />
+                            )}
+                            <span className={`text-[10px] uppercase tracking-widest font-bold ${
+                              promo.active ? 'text-green-600' : 'text-neutral-400'
+                            }`}>
+                              {promo.active ? 'Active' : 'Inactive'}
+                            </span>
+                          </button>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button 
+                            onClick={async () => {
+                              if (window.confirm('Delete this promo code?')) {
+                                await remove(ref(database, `settings/promoCodes/${promo.id}`));
+                              }
+                            }}
+                            className="p-2 hover:bg-red-50 text-neutral-400 hover:text-red-600 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              if (!newPromo.code || !newPromo.discountValue) return;
+              setIsAddingPromo(true);
+              try {
+                // Check for duplicate code
+                const codeExists = promoCodes.some(p => p.code === newPromo.code.toUpperCase());
+                if (codeExists) {
+                  alert('This promo code already exists.');
+                  return;
+                }
+                const promoRef = ref(database, 'settings/promoCodes');
+                const newRef = push(promoRef);
+                await set(newRef, {
+                  code: newPromo.code.toUpperCase(),
+                  discountType: newPromo.discountType,
+                  discountValue: Number(newPromo.discountValue),
+                  active: true,
+                  createdAt: new Date().toISOString()
+                });
+                setNewPromo({ code: '', discountType: 'percentage', discountValue: '' });
+              } catch (error) {
+                console.error('Error adding promo code:', error);
+              } finally {
+                setIsAddingPromo(false);
+              }
+            }} className="bg-white border border-border p-6 rounded-2xl shadow-sm space-y-4">
+              <div className="flex items-center gap-3 mb-2">
+                <Tag className="w-4 h-4" />
+                <h3 className="text-sm uppercase tracking-widest font-bold">Create Promo Code</h3>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-400 ml-1">Code</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="e.g. SUMMER20"
+                    className="w-full px-4 py-3 bg-neutral-50 border border-border rounded-xl text-sm uppercase tracking-widest font-bold focus:outline-none focus:ring-1 focus:ring-black transition-all"
+                    value={newPromo.code}
+                    onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-400 ml-1">Discount Type</label>
+                  <div className="flex gap-0 bg-neutral-100 p-1 rounded-xl">
+                    <button
+                      type="button"
+                      onClick={() => setNewPromo({ ...newPromo, discountType: 'percentage' })}
+                      className={`flex-1 py-2.5 text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                        newPromo.discountType === 'percentage' ? 'bg-black text-white shadow-sm' : 'text-neutral-400'
+                      }`}
+                    >
+                      <Percent className="w-3 h-3" />
+                      Percentage
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNewPromo({ ...newPromo, discountType: 'fixed' })}
+                      className={`flex-1 py-2.5 text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                        newPromo.discountType === 'fixed' ? 'bg-black text-white shadow-sm' : 'text-neutral-400'
+                      }`}
+                    >
+                      PKR Fixed
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[9px] uppercase tracking-[0.2em] font-bold text-neutral-400 ml-1">
+                    {newPromo.discountType === 'percentage' ? 'Discount Percentage (%)' : 'Discount Amount (PKR)'}
+                  </label>
+                  <input 
+                    type="number" 
+                    required
+                    min="1"
+                    max={newPromo.discountType === 'percentage' ? '100' : undefined}
+                    placeholder={newPromo.discountType === 'percentage' ? '10' : '200'}
+                    className="w-full px-4 py-3 bg-neutral-50 border border-border rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-black transition-all"
+                    value={newPromo.discountValue}
+                    onChange={(e) => setNewPromo({ ...newPromo, discountValue: e.target.value })}
+                  />
+                </div>
+
+                <Button type="submit" disabled={isAddingPromo} className="w-full py-6 rounded-xl text-[10px] uppercase tracking-widest font-bold">
+                  {isAddingPromo ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Promo Code"}
+                </Button>
+              </div>
+            </form>
+
+            <div className="bg-green-50 border border-green-100 p-6 rounded-2xl flex gap-4">
+              <Tag className="w-5 h-5 text-green-600 flex-shrink-0" />
+              <div>
+                <h4 className="text-[10px] uppercase tracking-widest font-bold text-green-900 mb-1">How It Works</h4>
+                <p className="text-[10px] text-green-700 leading-relaxed italic">
+                  Customers enter the code at checkout. Percentage codes reduce the subtotal by the given %. Fixed codes subtract a flat amount.
+                </p>
               </div>
             </div>
           </div>

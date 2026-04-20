@@ -225,11 +225,7 @@ export default function OrderTrackingPage() {
                     <div className="flex items-center gap-6">
                       <div className="w-16 h-20 bg-neutral-50 border border-neutral-100 overflow-hidden rounded relative">
                         <img
-                          src={
-                            imageUrl.includes("/upload/")
-                              ? imageUrl.replace("/upload/", "/upload/f_auto,q_auto/")
-                              : imageUrl
-                          }
+                          src={imageUrl}
                           alt={item.name}
                           className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all"
                         />

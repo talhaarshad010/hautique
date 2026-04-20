@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Button, Card } from '@/components/ui';
 import { products } from '@/lib/mock-data';
 import { motion } from 'motion/react';
-import { Trash2, Minus, Plus, ArrowLeft, ShoppingBag } from 'lucide-react';
+import { Trash2, Minus, Plus, ArrowLeft, ShoppingBag, Sparkles } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { ref, onValue } from 'firebase/database';
 import { database } from '@/lib/firebase';
@@ -63,20 +63,41 @@ export default function CartPage() {
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Cart Items */}
         <div className="w-full lg:w-2/3 space-y-6">
-          {cartItems.map((item) => (
+          {cartItems.map((item) => {
+            const isDeal = item.id.startsWith('deal-');
+            return (
             <div key={item.id} className="flex gap-6 p-6 bg-white border border-border group">
-              <div className="relative w-24 h-24 sm:w-32 sm:h-32 bg-neutral-100 overflow-hidden">
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32 bg-neutral-100 overflow-hidden flex-shrink-0">
                 <img
-                  src={item.image.includes('/upload/') ? item.image.replace('/upload/', '/upload/f_auto,q_auto/') : item.image}
+                  src={item.image}
                   alt={item.name}
                   className="w-full h-full object-cover"
                 />
+                {isDeal && (
+                  <div className="absolute top-0 left-0 bg-black text-white px-2 py-1 flex items-center gap-1">
+                    <Sparkles className="w-2.5 h-2.5" />
+                    <span className="text-[7px] uppercase tracking-widest font-bold">Deal</span>
+                  </div>
+                )}
               </div>
               <div className="flex-grow flex flex-col justify-between">
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="text-[10px] uppercase tracking-widest text-neutral-400 mb-1 block">{item.category}</span>
                     <h3 className="text-lg ">{item.name}</h3>
+                    {item.brand && (
+                      <p className="text-[10px] uppercase tracking-widest text-neutral-400 mt-0.5">{item.brand}</p>
+                    )}
+                    {item.selectedSize && (
+                      <span className="inline-block mt-2 text-[9px] uppercase tracking-widest font-bold bg-neutral-100 px-3 py-1 rounded-full">
+                        Size: {item.selectedSize}
+                      </span>
+                    )}
+                    {item.description && (
+                      <p className="text-[11px] text-neutral-500 mt-2 leading-relaxed max-w-md italic">
+                        {item.description}
+                      </p>
+                    )}
                   </div>
                   <button
                     onClick={() => removeFromCart(item.id, item.selectedSize)}
@@ -85,7 +106,7 @@ export default function CartPage() {
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mt-4">
                   <div className="flex items-center border border-border">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1, item.selectedSize)}
@@ -105,7 +126,8 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Summary */}

@@ -10,7 +10,6 @@ import {
   ArrowLeft,
   Loader2,
   ShoppingCart,
-  Plus,
   Check,
   Sparkles,
 } from "lucide-react";
@@ -28,9 +27,10 @@ export default function DealDetailPage() {
   const [deal, setDeal] = React.useState<Deal | null>(null);
   const [products, setProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [addedItems, setAddedItems] = React.useState<Record<string, boolean>>(
-    {},
-  );
+  const [addedToCart, setAddedToCart] = React.useState(false);
+
+  // Customer selected products
+  const [selectedProductIds, setSelectedProductIds] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     if (!id) return;
@@ -49,7 +49,7 @@ export default function DealDetailPage() {
             if (allProducts) {
               const selectedProducts = data.productIds
                 .map((pid: string) => ({ id: pid, ...allProducts[pid] }))
-                .filter((p: any) => p.name); // basic validation
+                .filter((p: any) => p.name);
               setProducts(selectedProducts);
             }
           });
@@ -61,28 +61,52 @@ export default function DealDetailPage() {
     return () => unsubscribeDeal();
   }, [id]);
 
+  const selectableCount = deal?.selectableCount || products.length;
+  const isSelectionRequired = selectableCount < products.length;
+
+  const toggleProductSelection = (productId: string) => {
+    setSelectedProductIds(prev => {
+      if (prev.includes(productId)) {
+        return prev.filter(id => id !== productId);
+      }
+      // Don't allow more than selectableCount
+      if (prev.length >= selectableCount) return prev;
+      return [...prev, productId];
+    });
+  };
+
+  const canAddToCart = isSelectionRequired 
+    ? selectedProductIds.length === selectableCount 
+    : products.length > 0;
+
   const handleAddDealToCart = () => {
-    if (!deal) return;
+    if (!deal || !canAddToCart) return;
 
     setLoading(true);
 
-    // Create a specialized product object for the deal
+    // Get selected product names for the cart description
+    const chosenProducts = isSelectionRequired
+      ? products.filter(p => selectedProductIds.includes(p.id))
+      : products;
+    
+    const productNames = chosenProducts.map(p => p.name).join(', ');
+
     const dealAsProduct: Product = {
-      id: `deal-${deal.id}`,
+      id: `deal-${deal.id}-${Date.now()}`,
       name: deal.name,
       brand: "Hautique Campaign",
       price: deal.price || 0,
       category: "Deals",
       image: deal.image,
-      description: deal.subtextText,
+      description: `${selectableCount} in 1: ${productNames}`,
       sizes: [],
     };
 
     addToCart(dealAsProduct, 1);
 
-    setAddedItems((prev) => ({ ...prev, all: true }));
+    setAddedToCart(true);
     setTimeout(() => {
-      setAddedItems((prev) => ({ ...prev, all: false }));
+      setAddedToCart(false);
       setLoading(false);
     }, 1500);
   };
@@ -126,11 +150,7 @@ export default function DealDetailPage() {
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
             <img
-              src={
-                deal.image.includes("/upload/")
-                  ? deal.image.replace("/upload/", "/upload/f_auto,q_auto/")
-                  : deal.image
-              }
+              src={deal.image}
               alt={deal.name}
               className="w-full h-full object-contain transition-transform duration-[20s] scale-110 hover:scale-100"
             />
@@ -148,7 +168,7 @@ export default function DealDetailPage() {
             <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 px-6 py-2 rounded-full mb-8">
                <Sparkles className="w-4 h-4 text-white" />
                <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-white">
-                Atelier Campaign
+                {selectableCount} in 1 Deal
                </span>
             </div>
             <h1 className="text-6xl md:text-9xl  mb-6 uppercase tracking-tighter leading-none text-white drop-shadow-2xl">
@@ -165,7 +185,7 @@ export default function DealDetailPage() {
               </div>
               <div className="flex items-center gap-3 text-white">
                 <Tag className="w-4 h-4 text-white" />
-                <span>Exclusive Value Enabled</span>
+                <span>Choose {selectableCount} of {products.length}</span>
               </div>
             </div>
           </motion.div>
@@ -178,27 +198,50 @@ export default function DealDetailPage() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-neutral-50 -mr-32 -mt-32 rounded-full blur-3xl" />
             
             <p className="text-[11px] uppercase tracking-[0.6em] text-neutral-400 mb-6 font-bold">Campaign Entry Rate</p>
-            <h2 className="text-6xl md:text-7xl  mb-12 italic tracking-tighter">
+            <h2 className="text-6xl md:text-7xl  mb-8 italic tracking-tighter">
               PKR {deal.price || 0}.00
             </h2>
 
+            {isSelectionRequired && (
+              <div className="mb-8">
+                <div className="inline-flex items-center gap-3 bg-neutral-50 border border-neutral-100 px-6 py-3 rounded-full">
+                  <span className={cn(
+                    "text-[11px] uppercase tracking-[0.3em] font-bold transition-colors",
+                    selectedProductIds.length === selectableCount ? "text-green-600" : "text-neutral-400"
+                  )}>
+                    {selectedProductIds.length} of {selectableCount} selected
+                  </span>
+                  {selectedProductIds.length === selectableCount && (
+                    <Check className="w-4 h-4 text-green-600" />
+                  )}
+                </div>
+              </div>
+            )}
+
             <Button
               onClick={handleAddDealToCart}
-              disabled={products.length === 0 || loading}
+              disabled={!canAddToCart || loading}
               className={cn(
                 "h-20 px-16 rounded-none uppercase tracking-[0.3em] text-[11px] font-bold transition-all duration-700 shadow-2xl relative z-10",
-                addedItems.all
+                addedToCart
                   ? "bg-green-600 text-white"
-                  : "bg-black text-white hover:bg-neutral-800 hover:scale-[1.02]",
+                  : !canAddToCart
+                    ? "bg-neutral-200 text-neutral-400 cursor-not-allowed"
+                    : "bg-black text-white hover:bg-neutral-800 hover:scale-[1.02]",
               )}
             >
-              {addedItems.all ? (
+              {addedToCart ? (
                 <>
                   <Check className="w-5 h-5 mr-3" />
                   Added to Cart
                 </>
               ) : loading && deal ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
+              ) : !canAddToCart && isSelectionRequired ? (
+                <>
+                  <ShoppingCart className="w-5 h-5 mr-4" />
+                  Select {selectableCount} Products Below
+                </>
               ) : (
                 <>
                   <ShoppingCart className="w-5 h-5 mr-4" />
@@ -208,7 +251,10 @@ export default function DealDetailPage() {
             </Button>
 
             <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold mt-10">
-              Includes {products.length} artisanal fragrances
+              {isSelectionRequired 
+                ? `Pick your ${selectableCount} favorites from ${products.length} options`
+                : `Includes ${products.length} artisanal fragrances`
+              }
             </p>
          </div>
       </div>
@@ -218,10 +264,17 @@ export default function DealDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 mb-32 items-end">
           <div className="lg:col-span-8">
             <h2 className="text-4xl md:text-5xl  uppercase tracking-tighter mb-8 decoration-neutral-200 underline underline-offset-[16px]">
-              Harmonious <br /> Resonance
+              {isSelectionRequired ? (
+                <>Choose Your <br /> Favorites</>
+              ) : (
+                <>Harmonious <br /> Resonance</>
+              )}
             </h2>
             <p className="text-sm uppercase tracking-[0.2em] text-neutral-500 font-medium leading-relaxed max-w-xl">
-              Each component of the {deal.name} has been selected for its unique vibration and contribution to the overall sensory narrative.
+              {isSelectionRequired 
+                ? `Select exactly ${selectableCount} product${selectableCount > 1 ? 's' : ''} from the collection below. Tap on a product to select or deselect it.`
+                : `Each component of the ${deal.name} has been selected for its unique vibration and contribution to the overall sensory narrative.`
+              }
             </p>
           </div>
           <div className="lg:col-span-4 flex justify-start lg:justify-end">
@@ -245,64 +298,154 @@ export default function DealDetailPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 md:gap-24">
-            {products.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: index * 0.1 }}
-                className="group"
-              >
-                <div className="relative">
-                  <div className="relative aspect-[3/4] overflow-hidden bg-white mb-8 shadow-sm group-hover:shadow-2xl transition-all duration-700">
-                    <img
-                      src={
-                        product.image.includes("/upload/")
-                          ? product.image.replace(
-                              "/upload/",
-                              "/upload/f_auto,q_auto/",
-                            )
-                          : product.image
-                      }
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    />
-                    
-                    <div className="absolute top-6 right-6">
-                       <div className="bg-white/80 backdrop-blur-md px-4 py-2 border border-neutral-100">
-                          <span className="text-[9px] uppercase tracking-widest font-bold text-neutral-400">Featured</span>
-                       </div>
-                    </div>
-                  </div>
+            {products.map((product, index) => {
+              const isSelected = selectedProductIds.includes(product.id);
+              const isDisabled = !isSelected && selectedProductIds.length >= selectableCount;
+              
+              return (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group"
+                >
+                  <div className="relative">
+                    {/* Clickable product card for selection */}
+                    {isSelectionRequired ? (
+                      <button
+                        type="button"
+                        onClick={() => toggleProductSelection(product.id)}
+                        disabled={isDisabled}
+                        className={cn(
+                          "w-full text-left transition-all duration-500",
+                          isDisabled && "opacity-40 cursor-not-allowed"
+                        )}
+                      >
+                        <div className={cn(
+                          "relative aspect-[3/4] overflow-hidden bg-white mb-8 transition-all duration-700",
+                          isSelected 
+                            ? "shadow-2xl ring-4 ring-black ring-offset-4" 
+                            : "shadow-sm group-hover:shadow-2xl"
+                        )}>
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                          />
+                          
+                          {/* Selection indicator */}
+                          <AnimatePresence>
+                            {isSelected && (
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0 }}
+                                className="absolute top-4 left-4 w-10 h-10 bg-black rounded-full flex items-center justify-center shadow-lg"
+                              >
+                                <Check className="w-5 h-5 text-white" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                          
+                          <div className="absolute top-6 right-6">
+                             <div className={cn(
+                               "backdrop-blur-md px-4 py-2 border transition-all",
+                               isSelected 
+                                 ? "bg-black text-white border-black" 
+                                 : "bg-white/80 border-neutral-100"
+                             )}>
+                                <span className={cn(
+                                  "text-[9px] uppercase tracking-widest font-bold",
+                                  isSelected ? "text-white" : "text-neutral-400"
+                                )}>
+                                  {isSelected ? 'Selected' : 'Tap to Select'}
+                                </span>
+                             </div>
+                          </div>
+                        </div>
+                      </button>
+                    ) : (
+                      <div className="relative aspect-[3/4] overflow-hidden bg-white mb-8 shadow-sm group-hover:shadow-2xl transition-all duration-700">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                        />
+                        <div className="absolute top-6 right-6">
+                           <div className="bg-white/80 backdrop-blur-md px-4 py-2 border border-neutral-100">
+                              <span className="text-[9px] uppercase tracking-widest font-bold text-neutral-400">Featured</span>
+                           </div>
+                        </div>
+                      </div>
+                    )}
 
-                  <div className="space-y-4">
-                    <p className="text-[10px] uppercase tracking-[0.4em] text-neutral-400 font-bold">
-                      {product.category}
-                    </p>
-                    <Link href={`/product/${product.id}`} className="block">
-                      <h3 className="text-2xl  hover:text-neutral-500 transition-colors uppercase tracking-tight">
-                        {product.name}
-                      </h3>
-                    </Link>
-                    <div className="h-px w-8 bg-neutral-200" />
-                    <div className="space-y-3">
-                      <p className="text-[9px] uppercase tracking-widest text-neutral-400 font-bold mb-1">Included Sizes</p>
-                      <div className="flex flex-wrap gap-2">
-                        {(deal?.productSizes?.[product.id] || product.sizes || []).map(size => (
-                          <span key={size} className="px-3 py-1 bg-neutral-50 border border-neutral-100 text-[8px] uppercase tracking-widest font-bold text-neutral-600 rounded-full">
-                            {size}
-                          </span>
-                        ))}
+                    <div className="space-y-4">
+                      <p className="text-[10px] uppercase tracking-[0.4em] text-neutral-400 font-bold">
+                        {product.category}
+                      </p>
+                      <Link href={`/product/${product.id}`} className="block">
+                        <h3 className="text-2xl  hover:text-neutral-500 transition-colors uppercase tracking-tight">
+                          {product.name}
+                        </h3>
+                      </Link>
+                      <div className="h-px w-8 bg-neutral-200" />
+                      <div className="space-y-3">
+                        <p className="text-[9px] uppercase tracking-widest text-neutral-400 font-bold mb-1">Included Sizes</p>
+                        <div className="flex flex-wrap gap-2">
+                          {(deal?.productSizes?.[product.id] || product.sizes || []).map(size => (
+                            <span key={size} className="px-3 py-1 bg-neutral-50 border border-neutral-100 text-[8px] uppercase tracking-widest font-bold text-neutral-600 rounded-full">
+                              {size}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </section>
+
+      {/* Floating selection bar for mobile */}
+      {isSelectionRequired && (
+        <AnimatePresence>
+          {selectedProductIds.length > 0 && (
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-neutral-100 shadow-2xl px-6 py-4 md:hidden"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">
+                    {selectedProductIds.length} of {selectableCount} selected
+                  </p>
+                  <p className="text-lg font-bold">PKR {deal.price || 0}.00</p>
+                </div>
+                <Button
+                  onClick={handleAddDealToCart}
+                  disabled={!canAddToCart || loading}
+                  className={cn(
+                    "h-12 px-8 rounded-none uppercase tracking-widest text-[10px] font-bold",
+                    addedToCart
+                      ? "bg-green-600 text-white"
+                      : canAddToCart
+                        ? "bg-black text-white"
+                        : "bg-neutral-200 text-neutral-400"
+                  )}
+                >
+                  {addedToCart ? "Added!" : canAddToCart ? "Add to Cart" : `Select ${selectableCount - selectedProductIds.length} more`}
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
 
       {/* Campaign Story Section */}
       <section className="bg-white py-40 px-6 border-y border-neutral-100 relative overflow-hidden">

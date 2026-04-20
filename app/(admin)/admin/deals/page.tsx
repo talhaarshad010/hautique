@@ -42,7 +42,9 @@ export default function DealsPage() {
     price: '',
     gallery: [] as string[],
     productIds: [] as string[],
-    productSizes: {} as Record<string, string[]>
+    productSizes: {} as Record<string, string[]>,
+    selectableCount: 2,
+    productSource: 'products' as 'products' | 'testers'
   });
 
   // Fetch Deals from Firebase
@@ -87,8 +89,12 @@ export default function DealsPage() {
   });
 
   const filteredProducts = productsList.filter(p => {
-    return p.name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
+    const matchesSearch = p.name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
            p.brand.toLowerCase().includes(productSearchTerm.toLowerCase());
+    const matchesSource = formData.productSource === 'testers' 
+      ? p.category === 'Testers' 
+      : p.category !== 'Testers';
+    return matchesSearch && matchesSource;
   });
 
   const toggleProductSelection = (productId: string) => {
@@ -160,6 +166,7 @@ export default function DealsPage() {
       const entry = {
         ...formData,
         price: Number(formData.price) || 0,
+        selectableCount: Number(formData.selectableCount) || 2,
         updatedAt: new Date().toISOString()
       };
 
@@ -185,7 +192,9 @@ export default function DealsPage() {
       price: deal.price?.toString() || '',
       gallery: deal.gallery || [],
       productIds: deal.productIds || [],
-      productSizes: deal.productSizes || {}
+      productSizes: deal.productSizes || {},
+      selectableCount: deal.selectableCount || 2,
+      productSource: deal.productSource || 'products'
     });
     setIsModalOpen(true);
   };
@@ -212,7 +221,9 @@ export default function DealsPage() {
       price: '',
       gallery: [],
       productIds: [],
-      productSizes: {}
+      productSizes: {},
+      selectableCount: 2,
+      productSource: 'products'
     });
   };
 
@@ -261,6 +272,7 @@ export default function DealsPage() {
               <tr className="bg-neutral-50">
                 <th className="px-8 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-400">Campaign</th>
                 <th className="px-8 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-400">Price</th>
+                <th className="px-8 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-400">Type</th>
                 <th className="px-8 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-400">Products</th>
                 <th className="px-8 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-400">Duration</th>
                 <th className="px-8 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-400 text-right">Actions</th>
@@ -269,7 +281,7 @@ export default function DealsPage() {
             <tbody className="divide-y divide-neutral-100">
               {filteredDeals.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-20 text-center text-neutral-400 uppercase tracking-widest text-[10px]">
+                  <td colSpan={6} className="px-8 py-20 text-center text-neutral-400 uppercase tracking-widest text-[10px]">
                     No active deals found.
                   </td>
                 </tr>
@@ -280,7 +292,7 @@ export default function DealsPage() {
                       <div className="flex items-center gap-4">
                         <div className="w-14 h-14 relative overflow-hidden bg-neutral-100 rounded">
                           <img
-                            src={deal.image.includes('/upload/') ? deal.image.replace('/upload/', '/upload/f_auto,q_auto/') : deal.image} 
+                            src={deal.image} 
                             alt={deal.name} 
                             className="w-full h-full object-cover"
                           />
@@ -297,12 +309,18 @@ export default function DealsPage() {
                       </div>
                     </td>
                     <td className="px-8 py-6">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm font-bold">{deal.selectableCount || (deal.productIds || []).length} in 1</span>
+                        <span className="text-[9px] uppercase tracking-widest text-neutral-400 font-bold">{deal.productSource === 'testers' ? 'Testers' : 'Products'}</span>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
                       <div className="flex items-center gap-1">
                         {(deal.productIds || []).slice(0, 3).map((pid) => {
                           const product = getProductById(pid);
                           return product ? (
                             <div key={pid} className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm -ml-2 first:ml-0">
-                              <img src={product.image.includes('/upload/') ? product.image.replace('/upload/', '/upload/f_auto,q_auto,w_50/') : product.image} alt={product.name} className="w-full h-full object-cover" />
+                              <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                             </div>
                           ) : null;
                         })}
@@ -439,15 +457,63 @@ export default function DealsPage() {
                   </div>
                 </div>
 
+                {/* Customer Selectable Count */}
+                <div className="space-y-3">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Customer Can Select (X in 1)</label>
+                  <div className="flex items-center gap-4">
+                    <input 
+                      type="number" 
+                      min="1" 
+                      max="10"
+                      placeholder="2" 
+                      className="w-24 bg-neutral-50 border border-neutral-100 rounded-lg px-4 py-3 text-center text-lg font-bold focus:outline-none focus:ring-1 focus:ring-black transition-all" 
+                      value={formData.selectableCount}
+                      onChange={(e) => setFormData({ ...formData, selectableCount: Math.max(1, Number(e.target.value) || 1) })}
+                    />
+                    <span className="text-sm text-neutral-500">products from the pool below</span>
+                  </div>
+                  <p className="text-[10px] text-neutral-400 leading-relaxed italic">
+                    Customer will choose {formData.selectableCount} product{formData.selectableCount > 1 ? 's' : ''} from the available options you select below.
+                  </p>
+                </div>
+
                 {/* Product Selector */}
                 <div className="space-y-4 pt-4 border-t border-neutral-100">
                   <div className="flex items-center justify-between">
                     <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">
-                      Select Products for This Deal
+                      Available Products Pool
                     </label>
                     <span className="text-[10px] uppercase tracking-widest font-bold text-black">
                       {formData.productIds.length} Selected
                     </span>
+                  </div>
+
+                  {/* Product Source Toggle */}
+                  <div className="flex gap-0 bg-neutral-100 p-1 rounded-lg w-fit">
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, productSource: 'products', productIds: [], productSizes: {} }))}
+                      className={cn(
+                        "px-5 py-2 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all",
+                        formData.productSource === 'products'
+                          ? "bg-black text-white shadow-sm"
+                          : "text-neutral-400 hover:text-black"
+                      )}
+                    >
+                      Products
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, productSource: 'testers', productIds: [], productSizes: {} }))}
+                      className={cn(
+                        "px-5 py-2 text-[10px] uppercase tracking-widest font-bold rounded-md transition-all",
+                        formData.productSource === 'testers'
+                          ? "bg-black text-white shadow-sm"
+                          : "text-neutral-400 hover:text-black"
+                      )}
+                    >
+                      Testers
+                    </button>
                   </div>
 
                   {/* Selected Products Preview with Size Selection */}
@@ -462,7 +528,7 @@ export default function DealsPage() {
                               <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full overflow-hidden border border-neutral-200">
                                   <img 
-                                    src={product.image.includes('/upload/') ? product.image.replace('/upload/', '/upload/f_auto,q_auto,w_80/') : product.image} 
+                                    src={product.image} 
                                     alt={product.name} 
                                     className="w-full h-full object-cover" 
                                   />
@@ -557,7 +623,7 @@ export default function DealsPage() {
                           >
                             <div className="w-10 h-10 rounded overflow-hidden bg-neutral-100 flex-shrink-0">
                               <img 
-                                src={product.image.includes('/upload/') ? product.image.replace('/upload/', '/upload/f_auto,q_auto,w_80/') : product.image}
+                                src={product.image}
                                 alt={product.name} 
                                 className="w-full h-full object-cover" 
                               />
@@ -588,7 +654,7 @@ export default function DealsPage() {
                       {formData.image ? (
                         <>
                           <img 
-                            src={formData.image.includes('/upload/') ? formData.image.replace('/upload/', '/upload/f_auto,q_auto/') : formData.image} 
+                            src={formData.image} 
                             alt="Preview" 
                             className="w-full h-full object-cover" 
                           />
@@ -628,7 +694,7 @@ export default function DealsPage() {
                     {formData.gallery?.map((url, index) => (
                       <div key={index} className="relative aspect-square bg-neutral-50 border border-neutral-100 group rounded overflow-hidden">
                         <img 
-                          src={url.includes('/upload/') ? url.replace('/upload/', '/upload/f_auto,q_auto/') : url} 
+                          src={url} 
                           alt={`Gallery ${index}`} 
                           className="w-full h-full object-cover" 
                         />

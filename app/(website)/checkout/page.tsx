@@ -19,6 +19,13 @@ export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart } = useCart();
   const router = useRouter();
 
+  // Promo code state
+  const [promoInput, setPromoInput] = React.useState('');
+  const [promoDiscount, setPromoDiscount] = React.useState(0);
+  const [appliedPromo, setAppliedPromo] = React.useState<{ code: string; discountType: string; discountValue: number } | null>(null);
+  const [promoError, setPromoError] = React.useState('');  
+  const [promoLoading, setPromoLoading] = React.useState(false);
+
   const [formData, setFormData] = React.useState({
     fullName: "",
     email: "",
@@ -43,7 +50,7 @@ export default function CheckoutPage() {
     return () => unsubscribe();
   }, []);
 
-  const total = cartTotal + shipping;
+  const total = cartTotal + shipping - promoDiscount;
 
   React.useEffect(() => {
     if (cartItems.length === 0 && !isSubmitted) {
@@ -115,6 +122,8 @@ export default function CheckoutPage() {
         })),
         total: total,
         shippingFee: shipping,
+        promoCode: appliedPromo?.code || null,
+        promoDiscount: promoDiscount || 0,
         status: "Pending",
         date: new Date().toLocaleDateString("en-US", {
           month: "long",
@@ -343,12 +352,82 @@ export default function CheckoutPage() {
               <label className="text-xs uppercase tracking-widest font-bold">
                 Coupon Code
               </label>
-              <div className="flex gap-2">
-                <Input placeholder="Enter code (e.g. HAUTIQUE10)" />
-                <Button variant="outline" type="button" className="shrink-0">
-                  Apply
-                </Button>
-              </div>
+              {appliedPromo ? (
+                <div className="flex items-center justify-between bg-green-50 border border-green-200 px-4 py-3 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-green-700 uppercase tracking-widest">{appliedPromo.code}</span>
+                    <span className="text-[10px] text-green-600 uppercase tracking-widest">
+                      {appliedPromo.discountType === 'percentage' ? `${appliedPromo.discountValue}% Off` : `PKR ${appliedPromo.discountValue} Off`}
+                    </span>
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={() => { setAppliedPromo(null); setPromoDiscount(0); setPromoInput(''); setPromoError(''); }}
+                    className="text-[10px] uppercase tracking-widest font-bold text-red-500 hover:text-red-700 transition-colors"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <Input 
+                      placeholder="Enter code (e.g. HAUTIQUE10)" 
+                      value={promoInput}
+                      onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError(''); }}
+                      className="uppercase tracking-widest font-bold"
+                    />
+                    <Button 
+                      variant="outline" 
+                      type="button" 
+                      className="shrink-0"
+                      disabled={promoLoading || !promoInput}
+                      onClick={async () => {
+                        if (!promoInput) return;
+                        setPromoLoading(true);
+                        setPromoError('');
+                        try {
+                          const promoRef = ref(database, 'settings/promoCodes');
+                          const unsubscribe = onValue(promoRef, (snapshot) => {
+                            const data = snapshot.val();
+                            unsubscribe();
+                            if (!data) {
+                              setPromoError('Invalid promo code.');
+                              setPromoLoading(false);
+                              return;
+                            }
+                            const codes = Object.values(data) as any[];
+                            const match = codes.find((c: any) => c.code === promoInput && c.active);
+                            if (!match) {
+                              setPromoError('Invalid or expired promo code.');
+                              setPromoLoading(false);
+                              return;
+                            }
+                            // Calculate discount
+                            let discount = 0;
+                            if (match.discountType === 'percentage') {
+                              discount = Math.round(cartTotal * match.discountValue / 100);
+                            } else {
+                              discount = Math.min(match.discountValue, cartTotal);
+                            }
+                            setPromoDiscount(discount);
+                            setAppliedPromo({ code: match.code, discountType: match.discountType, discountValue: match.discountValue });
+                            setPromoLoading(false);
+                          });
+                        } catch (err) {
+                          setPromoError('Failed to validate code.');
+                          setPromoLoading(false);
+                        }
+                      }}
+                    >
+                      {promoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
+                    </Button>
+                  </div>
+                  {promoError && (
+                    <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-1">{promoError}</p>
+                  )}
+                </>
+              )}
             </div>
           </section>
 
@@ -381,14 +460,7 @@ export default function CheckoutPage() {
                   <div className="flex items-center gap-4">
                     <div className="relative w-16 h-16 bg-white border border-border overflow-hidden rounded">
                       <img
-                        src={
-                          item.image.includes("/upload/")
-                            ? item.image.replace(
-                                "/upload/",
-                                "/upload/f_auto,q_auto/",
-                              )
-                            : item.image
-                        }
+                        src={item.image}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />
@@ -422,9 +494,19 @@ export default function CheckoutPage() {
                 <span className="text-neutral-500">Subtotal</span>
                 <span>PKR {cartTotal}.00</span>
               </div>
+              {promoDiscount > 0 && appliedPromo && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-green-600 flex items-center gap-1">
+                    Discount ({appliedPromo.code})
+                  </span>
+                  <span className="text-green-600 font-medium">- PKR {promoDiscount}.00</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-500">Shipping</span>
-                <span className="text-green-600 font-medium">Free</span>
+                <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>
+                  {shipping === 0 ? 'Free' : `PKR ${shipping}.00`}
+                </span>
               </div>
               <div className="pt-4 border-t border-border flex justify-between font-bold text-lg">
                 <span>Total</span>

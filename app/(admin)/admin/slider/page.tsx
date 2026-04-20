@@ -74,7 +74,7 @@ export default function AdminSliderPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.image || !formData.title) return;
+    if (!formData.image) return;
 
     setIsSaving(true);
     try {
@@ -336,7 +336,7 @@ export default function AdminSliderPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Tagline</label>
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Tagline <span className="text-neutral-300 italic">— Optional</span></label>
                   <Input 
                     placeholder="e.g. EXQUISITE FRAGRANCES" 
                     className="border-none bg-neutral-50 py-6 focus-visible:ring-0 uppercase tracking-[0.2em]"
@@ -346,13 +346,12 @@ export default function AdminSliderPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Main Title (Use \n for line breaks)</label>
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-neutral-400">Main Title (Use \n for line breaks) <span className="text-neutral-300 italic">— Optional</span></label>
                   <textarea 
                     placeholder="The Art of Scent\nInvisible Luxury"
                     className="w-full bg-neutral-50 border-none p-4 text-xl  focus:outline-none min-h-[100px] leading-tight"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    required
                   />
                 </div>
 

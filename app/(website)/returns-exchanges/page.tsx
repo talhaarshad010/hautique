@@ -55,8 +55,8 @@ export default function ReturnsExchangesPage() {
         >
           <PolicyCard
             icon={RefreshCw}
-            title="30-Day Window"
-            description="We offer a 30-day return window for products that are in their original, unopened, and sealed box. Fragrance bottles that have been unsealed cannot be returned due to health and safety regulations."
+            title="15-Day Window"
+            description="We offer a 15-day return window for products that are in their original, unopened, and sealed box. Fragrance bottles that have been unsealed cannot be returned due to health and safety regulations."
           />
         </motion.div>
 

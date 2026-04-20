@@ -36,6 +36,8 @@ export interface Deal {
   gallery?: string[];
   productIds?: string[];
   productSizes?: Record<string, string[]>;
+  selectableCount?: number;
+  productSource?: 'products' | 'testers';
 }
 // kdjfkjdkj
 export const products: Product[] = [

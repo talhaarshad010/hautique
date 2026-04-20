@@ -29,12 +29,15 @@ const ProductCard = ({ product, addToCart }: { product: Product; addToCart: (pro
       whileHover={{ y: -10 }}
       className="group relative flex flex-col bg-white border border-neutral-100 overflow-hidden"
     >
-      <Link href={`/product/${product.id}`} className="relative block aspect-[3/4] overflow-hidden bg-neutral-50">
-        <img
-          src={product.image.includes('/upload/') ? product.image.replace('/upload/', '/upload/f_auto,q_auto/') : product.image}
+      <Link href={`/product/${product.id}`} className="relative block aspect-[4/5] overflow-hidden bg-neutral-50">
+        <Image
+          src={product.image}
           alt={product.name}
-          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
       </Link>
       <div className="p-8 flex flex-col items-center text-center">
         <span className="text-[9px] uppercase tracking-[0.3em] text-neutral-400 mb-2 font-bold">{product.category}</span>
