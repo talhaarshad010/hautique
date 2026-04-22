@@ -92,8 +92,8 @@ export default function DealsPage() {
     const matchesSearch = p.name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
            p.brand.toLowerCase().includes(productSearchTerm.toLowerCase());
     const matchesSource = formData.productSource === 'testers' 
-      ? p.category === 'Testers' 
-      : p.category !== 'Testers';
+      ? p.category !== 'Testers' 
+      : true;
     return matchesSearch && matchesSource;
   });
 
@@ -621,16 +621,20 @@ export default function DealsPage() {
                               isSelected ? "bg-neutral-50" : "hover:bg-neutral-50/50"
                             )}
                           >
-                            <div className="w-10 h-10 rounded overflow-hidden bg-neutral-100 flex-shrink-0">
-                              <img 
-                                src={product.image}
-                                alt={product.name} 
-                                className="w-full h-full object-cover" 
-                              />
-                            </div>
+                            {formData.productSource !== 'testers' && (
+                              <div className="w-10 h-10 rounded overflow-hidden bg-neutral-100 flex-shrink-0">
+                                <img 
+                                  src={product.image}
+                                  alt={product.name} 
+                                  className="w-full h-full object-cover" 
+                                />
+                              </div>
+                            )}
                             <div className="flex-grow min-w-0">
                               <p className="text-[10px] font-bold uppercase tracking-widest truncate">{product.name}</p>
-                              <p className="text-[9px] uppercase tracking-widest text-neutral-400">{product.category} • PKR {product.price}</p>
+                              {formData.productSource !== 'testers' && (
+                                <p className="text-[9px] uppercase tracking-widest text-neutral-400">{product.category} • PKR {product.price}</p>
+                              )}
                             </div>
                             <div className={cn(
                               "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all",

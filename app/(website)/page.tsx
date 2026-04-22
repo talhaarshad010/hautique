@@ -6,11 +6,10 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { Button, Badge, Input, cn, Skeleton } from "@/components/ui";
 import { type Product, type Deal } from "@/lib/mock-data";
-import { ArrowRight, ShoppingCart, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, ShoppingCart, Loader2, Check } from "lucide-react";
 import { ref, onValue } from "firebase/database";
 import { database } from "@/lib/firebase";
 import { useCart } from "@/context/CartContext";
-import { Check } from "lucide-react";
 
 const Hero = ({
   dynamicSlides,
@@ -20,17 +19,44 @@ const Hero = ({
   loading?: boolean;
 }) => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [direction, setDirection] = React.useState(0);
+  const [isHovered, setIsHovered] = React.useState(false);
 
   const slides = dynamicSlides || [];
 
+  const paginate = (newDirection: number) => {
+    setDirection(newDirection);
+    setCurrentSlide((prev) => (prev + newDirection + slides.length) % slides.length);
+  };
+
   React.useEffect(() => {
-    if (slides.length > 1) {
+    if (slides.length > 1 && !isHovered) {
       const timer = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % slides.length);
-      }, 5000);
+        paginate(1);
+      }, 6000);
       return () => clearInterval(timer);
     }
-  }, [slides.length]);
+  }, [slides.length, isHovered]);
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? "100%" : "-100%",
+      opacity: 0,
+      scale: 1.1,
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1,
+      scale: 1,
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? "100%" : "-100%",
+      opacity: 0,
+      scale: 0.9,
+    }),
+  };
 
   if (loading || slides.length === 0) {
     return (
@@ -46,86 +72,192 @@ const Hero = ({
   }
 
   return (
-    <section className="relative h-[45vh] sm:h-[65vh] md:h-[80vh] w-full bg-white overflow-hidden">
-      <AnimatePresence mode="wait">
+    <section 
+      className="relative h-[50vh] sm:h-[70vh] md:h-[85vh] w-full bg-neutral-900 overflow-hidden group/slider"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <AnimatePresence initial={false} custom={direction} mode="popLayout">
         <motion.div
           key={currentSlide}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0 flex items-center justify-center"
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{
+            x: { type: "spring", stiffness: 300, damping: 30 },
+            opacity: { duration: 0.6 },
+            scale: { duration: 0.8 }
+          }}
+          className="absolute inset-0 w-full h-full"
         >
           <div className="relative w-full h-full">
-            {/* Desktop Image */}
-            <Image
-              src={slides[currentSlide].image}
-              alt="Luxury Perfume"
-              fill
-              className="hidden lg:block object-cover brightness-100 md:brightness-100"
-              priority
-            />
-            {/* Tablet Image */}
-            <Image
-              src={
-                slides[currentSlide].imageTablet || slides[currentSlide].image
-              }
-              alt="Luxury Perfume"
-              fill
-              className="hidden md:block lg:hidden object-cover brightness-100 md:brightness-100"
-              priority
-            />
-            {/* Mobile Image */}
-            <Image
-              src={
-                slides[currentSlide].imageMobile || slides[currentSlide].image
-              }
-              alt="Luxury Perfume"
-              fill
-              className="block md:hidden object-cover brightness-100"
-              priority
-            />
-            <div className={cn(
-              "absolute inset-0 flex flex-col items-center justify-center text-center px-6 text-white",
-              (slides[currentSlide].tag || slides[currentSlide].title) && "bg-black/10 md:bg-black/20"
-            )}>
-              {slides[currentSlide].tag && (
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="text-xs md:text-sm uppercase tracking-[0.3em] mb-6 font-medium"
-                >
-                  {slides[currentSlide].tag}
-                </motion.span>
+            {/* Desktop Media */}
+            <div className="hidden lg:block absolute inset-0">
+              {slides[currentSlide].video ? (
+                <video
+                  src={slides[currentSlide].video}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover brightness-[0.85] transition-transform duration-[10s] ease-linear scale-105"
+                />
+              ) : (
+                <Image
+                  src={slides[currentSlide].image}
+                  alt={slides[currentSlide].title || "Luxury Perfume"}
+                  fill
+                  className="object-cover brightness-[0.85] transition-transform duration-[10s] ease-linear scale-105"
+                  priority
+                />
               )}
-              {slides[currentSlide].title && (
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  className="text-5xl md:text-8xl  mb-8 max-w-4xl leading-tight whitespace-pre-line"
-                >
-                  {slides[currentSlide].title}
-                </motion.h1>
+            </div>
+
+            {/* Tablet Media */}
+            <div className="hidden md:block lg:hidden absolute inset-0">
+              {slides[currentSlide].videoTablet || slides[currentSlide].video ? (
+                <video
+                  src={slides[currentSlide].videoTablet || slides[currentSlide].video}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover brightness-[0.85] scale-105"
+                />
+              ) : (
+                <Image
+                  src={slides[currentSlide].imageTablet || slides[currentSlide].image}
+                  alt={slides[currentSlide].title || "Luxury Perfume"}
+                  fill
+                  className="object-cover brightness-[0.85] scale-105"
+                  priority
+                />
               )}
+            </div>
+
+            {/* Mobile Media */}
+            <div className="block md:hidden absolute inset-0">
+              {slides[currentSlide].videoMobile || slides[currentSlide].video ? (
+                <video
+                  src={slides[currentSlide].videoMobile || slides[currentSlide].video}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover brightness-[0.85] scale-105"
+                />
+              ) : (
+                <Image
+                  src={slides[currentSlide].imageMobile || slides[currentSlide].image}
+                  alt={slides[currentSlide].title || "Luxury Perfume"}
+                  fill
+                  className="object-cover brightness-[0.85] scale-105"
+                  priority
+                />
+              )}
+            </div>
+            
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 text-white bg-black/20">
+              <div className="max-w-5xl space-y-4 md:space-y-6">
+                {slides[currentSlide].tag && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                  >
+                    <span className="inline-block px-4 py-1.5 border border-white/30 backdrop-blur-sm text-[10px] md:text-sm uppercase tracking-[0.4em] font-medium rounded-full mb-2">
+                      {slides[currentSlide].tag}
+                    </span>
+                  </motion.div>
+                )}
+                
+                {slides[currentSlide].title && (
+                  <motion.h1
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.5 }}
+                    className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.9] whitespace-pre-line"
+                  >
+                    {slides[currentSlide].title}
+                  </motion.h1>
+                )}
+
+                {slides[currentSlide].buttonText && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.7 }}
+                    className="pt-8"
+                  >
+                    <Link href={slides[currentSlide].link || "/shop"}>
+                      <Button variant="outline" className="bg-white/10 hover:bg-white text-white hover:text-black border-white/50 hover:border-white px-10 py-6 text-xs uppercase tracking-[0.3em] backdrop-blur-md transition-all">
+                        {slides[currentSlide].buttonText}
+                      </Button>
+                    </Link>
+                  </motion.div>
+                )}
+              </div>
             </div>
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {/* Slider Indicators */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4 z-10">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentSlide(i)}
-            className={cn(
-              "w-12 h-0.5 transition-all duration-500",
-              currentSlide === i ? "bg-white" : "bg-white/30",
-            )}
-          />
-        ))}
+      {/* Navigation Arrows */}
+      <div className="absolute inset-x-4 md:inset-x-8 top-1/2 -translate-y-1/2 flex justify-between z-20 pointer-events-none">
+        <button
+          onClick={(e) => { e.preventDefault(); paginate(-1); }}
+          className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/20 bg-black/10 hover:bg-white hover:text-black text-white backdrop-blur-sm transition-all pointer-events-auto opacity-0 translate-x-[-20px] group-hover/slider:opacity-100 group-hover/slider:translate-x-0"
+        >
+          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+        </button>
+        <button
+          onClick={(e) => { e.preventDefault(); paginate(1); }}
+          className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/20 bg-black/10 hover:bg-white hover:text-black text-white backdrop-blur-sm transition-all pointer-events-auto opacity-0 translate-x-[20px] group-hover/slider:opacity-100 group-hover/slider:translate-x-0"
+        >
+          <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+        </button>
+      </div>
+
+      {/* Bottom Indicators & Progress */}
+      <div className="absolute bottom-8 md:bottom-12 left-0 w-full px-6 md:px-12 z-20">
+        <div className="max-w-7xl mx-auto flex items-end justify-between">
+          <div className="flex gap-2 md:gap-4 flex-1 mr-8">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setDirection(i > currentSlide ? 1 : -1);
+                  setCurrentSlide(i);
+                }}
+                className="relative h-1 flex-1 max-w-[100px] overflow-hidden rounded-full bg-white/20"
+              >
+                {currentSlide === i && (
+                  <motion.div
+                    className="absolute inset-0 bg-white origin-left"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: isHovered ? (0) : 1 }}
+                    transition={{ 
+                      duration: isHovered ? 0 : 6, 
+                      ease: "linear",
+                      repeat: 0
+                    }}
+                  />
+                )}
+                {currentSlide > i && (
+                  <div className="absolute inset-0 bg-white" />
+                )}
+              </button>
+            ))}
+          </div>
+          
+          <div className="flex items-baseline gap-1 text-white/50 text-[10px] md:text-sm font-mono tracking-tighter">
+            <span className="text-white text-lg md:text-2xl font-light">{(currentSlide + 1).toString().padStart(2, '0')}</span>
+            <span>/</span>
+            <span>{slides.length.toString().padStart(2, '0')}</span>
+          </div>
+        </div>
       </div>
     </section>
   );

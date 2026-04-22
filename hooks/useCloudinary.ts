@@ -30,13 +30,13 @@ export const useCloudinary = () => {
     }
 
     const formData = new FormData();
-    formData.append('file', file, file.name); // Explicitly pass the filename
+    formData.append('file', file, file.name);
     formData.append('upload_preset', uploadPreset);
-    formData.append('resource_type', 'image'); // Force image type to prevent auto-download headers
+    formData.append('resource_type', 'auto'); // Auto-detect resource type (image or video)
 
     try {
       const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
         {
           method: 'POST',
           body: formData,
