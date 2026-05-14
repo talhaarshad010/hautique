@@ -4,13 +4,10 @@ import * as React from 'react';
 import { Card, cn } from '@/components/ui';
 import { orders, products } from '@/lib/mock-data';
 import {
-  DollarSign,
   TrendingUp,
   ShoppingBag,
   Users,
   Banknote,
-  ArrowUpRight,
-  ArrowDownRight
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ref, onValue } from 'firebase/database';
@@ -23,26 +20,15 @@ const StatCard = ({
   title,
   value,
   icon: Icon,
-  trend,
-  trendValue
 }: {
   title: string;
   value: string;
   icon: any;
-  trend: 'up' | 'down';
-  trendValue: string;
 }) => (
   <Card className="flex flex-col gap-4">
     <div className="flex justify-between items-start">
       <div className="p-3 bg-neutral-100 rounded-lg">
         <Icon className="w-6 h-6" />
-      </div>
-      <div className={cn(
-        'flex items-center text-xs font-bold',
-        trend === 'up' ? 'text-green-600' : 'text-red-600'
-      )}>
-        Trend {trend === 'up' ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
-        {trendValue}
       </div>
     </div>
     <div>
@@ -87,11 +73,11 @@ export default function DashboardPage() {
   const totalRevenue = ordersList.reduce((acc, order) => acc + (Number(order.total) || 0), 0);
   const deliveredOrders = ordersList.filter(o => o.status === 'Delivered').length;
 
-  const stats: { title: string; value: string; icon: any; trend: 'up' | 'down'; trendValue: string }[] = [
-    { title: 'Total Revenue', value: `PKR ${totalRevenue.toLocaleString()}`, icon: Banknote, trend: 'up', trendValue: '+12%' },
-    { title: 'Total Orders', value: ordersList.length.toString(), icon: ShoppingBag, trend: 'up', trendValue: '+8%' },
-    { title: 'Total Products', value: productsCount.toString(), icon: TrendingUp, trend: 'up', trendValue: '+2%' },
-    { title: 'Delivered', value: deliveredOrders.toString(), icon: Users, trend: 'up', trendValue: '+5%' },
+  const stats: { title: string; value: string; icon: any }[] = [
+    { title: 'Total Revenue', value: `PKR ${totalRevenue.toLocaleString()}`, icon: Banknote },
+    { title: 'Total Orders', value: ordersList.length.toString(), icon: ShoppingBag },
+    { title: 'Total Products', value: productsCount.toString(), icon: TrendingUp },
+    { title: 'Delivered', value: deliveredOrders.toString(), icon: Users },
   ];
 
   return (
